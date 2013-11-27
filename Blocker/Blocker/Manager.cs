@@ -21,6 +21,7 @@ namespace Blocker
         private SpriteBatch spriteBatch;
 
         private Background background;
+        private Menu menu;
 
         public Manager(Game game, SpriteBatch spriteBatch)
             : base(game)
@@ -35,8 +36,13 @@ namespace Blocker
         /// </summary>
         public override void Initialize()
         {
+            // Create the background entity
             background = new Background(game, spriteBatch);
             background.Initialize();
+
+            // Create the menu entity
+            menu = new Menu(game, spriteBatch);
+            menu.Initialize();
 
             base.Initialize();
         }
@@ -50,6 +56,9 @@ namespace Blocker
             // Update the background
             background.Update(gameTime);
 
+            if (menu != null)
+                menu.Update(gameTime);
+
             base.Update(gameTime);
         }
 
@@ -61,6 +70,9 @@ namespace Blocker
         {
             // Draw the background
             background.Draw(gameTime);
+
+            if (menu != null)
+                menu.Draw(gameTime);
             
             base.Draw(gameTime);
         }

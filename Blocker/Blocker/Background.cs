@@ -18,7 +18,7 @@ namespace Blocker
     public class Background : Microsoft.Xna.Framework.DrawableGameComponent
     {
         private Game game;
-        private SpriteBatch sb;
+        private SpriteBatch spriteBatch;
 
         private Texture2D staticBG;
         private Texture2D stars;
@@ -30,7 +30,7 @@ namespace Blocker
             : base(game)
         {
             this.game =  game;
-            this.sb = sb;
+            this.spriteBatch = sb;
         }
 
         /// <summary>
@@ -65,17 +65,17 @@ namespace Blocker
         public override void Draw(GameTime gameTime)
         {
             // Draw the static background
-            sb.Begin();
-            sb.Draw(staticBG, new Rectangle(0, 0, 480, 800), Color.White);
-            sb.Draw(planet, new Rectangle(220, -50, 300, 300), Color.White);
-            sb.End();
+            spriteBatch.Begin();
+            spriteBatch.Draw(staticBG, new Rectangle(0, 0, 480, 800), Color.White);
+            spriteBatch.Draw(planet, new Rectangle(220, -50, 300, 300), Color.White);
+            spriteBatch.End();
 
-            sb.Begin(SpriteSortMode.Deferred, null, SamplerState.LinearWrap, null, null);
-            sb.Draw(stars,
+            spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.LinearWrap, null, null);
+            spriteBatch.Draw(stars,
                     new Rectangle(0, 0, 480, 800),
                     new Rectangle((int)(-scroll.X), (int)(-scroll.Y), stars.Width, stars.Height),
                     Color.White * 0.3f);
-            sb.End();
+            spriteBatch.End();
 
             base.Draw(gameTime);
         }
