@@ -15,14 +15,14 @@ namespace Blocker
     /// <summary>
     /// This is the main type for your game
     /// </summary>
-    public class Game1 : Microsoft.Xna.Framework.Game
+    public class BlockerGame : Microsoft.Xna.Framework.Game
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
-        Background bg;
+        private Manager manager;
 
-        public Game1()
+        public BlockerGame()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
@@ -33,6 +33,7 @@ namespace Blocker
             // Extend battery life under lock.
             InactiveSleepTime = TimeSpan.FromSeconds(1);
 
+            // Set the resolution to use
             graphics.PreferredBackBufferWidth = 480;
             graphics.PreferredBackBufferHeight = 800; 
         }
@@ -58,8 +59,8 @@ namespace Blocker
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            bg = new Background(this, spriteBatch);
-            bg.Initialize();
+            manager = new Manager(this, spriteBatch);
+            manager.Initialize();
         }
 
         /// <summary>
@@ -82,7 +83,8 @@ namespace Blocker
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
 
-            //bg.Update(gameTime);
+            // Update the manager
+            manager.Update(gameTime);
 
             base.Update(gameTime);
         }
@@ -95,7 +97,8 @@ namespace Blocker
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            bg.Draw(gameTime);
+            // Have the manager draw the game components
+            manager.Draw(gameTime);
 
             base.Draw(gameTime);
         }

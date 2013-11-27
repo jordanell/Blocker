@@ -15,22 +15,18 @@ namespace Blocker
     /// <summary>
     /// This is a game component that implements IUpdateable.
     /// </summary>
-    public class Background : Microsoft.Xna.Framework.DrawableGameComponent
+    public class Manager : Microsoft.Xna.Framework.DrawableGameComponent
     {
         private Game game;
-        private SpriteBatch sb;
+        private SpriteBatch spriteBatch;
 
-        private Texture2D staticBG;
-        private Texture2D stars;
-        private Texture2D planet;
+        private Background background;
 
-        private Vector2 scroll;
-
-        public Background(Game game, SpriteBatch sb)
+        public Manager(Game game, SpriteBatch spriteBatch)
             : base(game)
         {
-            this.game =  game;
-            this.sb = sb;
+            this.game = game;
+            this.spriteBatch = spriteBatch;
         }
 
         /// <summary>
@@ -39,9 +35,8 @@ namespace Blocker
         /// </summary>
         public override void Initialize()
         {
-            staticBG = game.Content.Load<Texture2D>("Background\\StarsBlue");
-            stars = game.Content.Load<Texture2D>("Background\\Stars");
-            planet = game.Content.Load<Texture2D>("Background\\Planet");
+            background = new Background(game, spriteBatch);
+            background.Initialize();
 
             base.Initialize();
         }
@@ -52,31 +47,21 @@ namespace Blocker
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Update(GameTime gameTime)
         {
-            scroll.X += 0.5f;
-            scroll.Y += 0.5f;
+            // Update the background
+            background.Update(gameTime);
 
             base.Update(gameTime);
         }
 
         /// <summary>
-        /// Allows the background to draw itself
+        /// 
         /// </summary>
         /// <param name="gameTime"></param>
         public override void Draw(GameTime gameTime)
         {
-            // Draw the static background
-            sb.Begin();
-            sb.Draw(staticBG, new Rectangle(0, 0, 480, 800), Color.White);
-            sb.Draw(planet, new Rectangle(220, -50, 300, 300), Color.White);
-            sb.End();
-
-            sb.Begin(SpriteSortMode.Deferred, null, SamplerState.LinearWrap, null, null);
-            sb.Draw(stars,
-                    new Rectangle(0, 0, 480, 800),
-                    new Rectangle((int)(-scroll.X), (int)(-scroll.Y), stars.Width, stars.Height),
-                    Color.White * 0.3f);
-            sb.End();
-
+            // Draw the background
+            background.Draw(gameTime);
+            
             base.Draw(gameTime);
         }
     }
