@@ -8,10 +8,16 @@ using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+using Microsoft.Xna.Framework.Input.Touch;
 
 
 namespace Blocker
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    public enum TouchButtonState { Up, Down, Clicked }
+
     /// <summary>
     /// This is a game component that implements IUpdateable.
     /// </summary>
@@ -28,7 +34,9 @@ namespace Blocker
         private Color color = Color.White;
         private Vector2 textLocation;
 
-        public bool pressed = false;
+        public TouchButtonState state = TouchButtonState.Up;
+
+        public bool enabled = true;
 
         public Button(Game game, SpriteBatch spriteBatch, Rectangle destination, Texture2D texture, SpriteFont font, String text)
             : base(game)
@@ -71,13 +79,24 @@ namespace Blocker
             this.color = color;
         }
 
+        private bool isButtonTouched(TouchLocation touch) 
+        {
+            return (touch.Position.X >= destination.Left && touch.Position.X <= destination.Right &&
+                    touch.Position.Y >= destination.Top  && touch.Position.Y <= destination.Bottom);
+        }
+
         /// <summary>
         /// Allows the game component to update itself.
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Update(GameTime gameTime)
         {
-            // TODO: Add your update code here
+            TouchCollection touchCollection = TouchPanel.GetState();
+            foreach (TouchLocation touch in touchCollection)
+            {
+                if (isButtonTouched(touch))
+                    state = TouchButtonState.Clicked;
+            }
 
             base.Update(gameTime);
         }
@@ -85,8 +104,17 @@ namespace Blocker
         public override void Draw(GameTime gameTime)
         {
             spriteBatch.Begin();
-            spriteBatch.Draw(texture, destination, Color.White);
-            spriteBatch.DrawString(font, text, textLocation, color);
+            if (enabled)
+            {
+                spriteBatch.Draw(texture, destination, Color.White);
+                spriteBatch.DrawString(font, text, textLocation, color);
+            }
+            else
+            {
+                spriteBatch.Draw(texture, destination, Color.Silver);
+                spriteBatch.DrawString(font, text, textLocation, Color.Silver);
+            }
+
             spriteBatch.End();
         }
     }
