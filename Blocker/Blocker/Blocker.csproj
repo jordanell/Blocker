@@ -66,6 +66,8 @@
   <ItemGroup>
     <Compile Include="Background.cs" />
     <Compile Include="Button.cs" />
+    <Compile Include="Label.cs" />
+    <Compile Include="LevelSelector.cs" />
     <Compile Include="Manager.cs" />
     <Compile Include="Menu.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
