@@ -15,26 +15,27 @@ namespace Blocker
     /// <summary>
     /// This is a game component that implements IUpdateable.
     /// </summary>
-    public class Label : Microsoft.Xna.Framework.DrawableGameComponent
+    public class Animation : Microsoft.Xna.Framework.DrawableGameComponent
     {
         private Game game;
         private SpriteBatch spriteBatch;
 
-        private SpriteFont font;
+        private Block block;
 
-        private String text;
+        private List<Texture2D> slides;
+        private int slide = 0;
 
-        private Rectangle destination;
-        Vector2 textLocation;
+        private int speed;
+        private int count;
 
-        public Label(Game game, SpriteBatch spriteBatch, Rectangle destination, SpriteFont font, String text)
+        public Animation(Game game, SpriteBatch spriteBatch, Block block, List<Texture2D> slides, int speed)
             : base(game)
         {
             this.game = game;
             this.spriteBatch = spriteBatch;
-            this.font = font;
-            this.text = text;
-            this.destination = destination;
+            this.block = block;
+            this.slides = slides;
+            this.speed = speed;
         }
 
         /// <summary>
@@ -43,23 +44,10 @@ namespace Blocker
         /// </summary>
         public override void Initialize()
         {
-            setTextLocation();
+            Random rnd = new Random();
+            count = rnd.Next(0, 4);
 
             base.Initialize();
-        }
-
-        public void setText(String text)
-        {
-            this.text = text;
-            setTextLocation();
-        }
-
-        private void setTextLocation()
-        {
-            Vector2 size = font.MeasureString(text);
-            textLocation = new Vector2();
-            textLocation.X = destination.X + ((destination.Width / 2) - (size.X / 2));
-            textLocation.Y = destination.Y + ((destination.Height / 2) - (size.Y / 2));
         }
 
         /// <summary>
@@ -75,8 +63,17 @@ namespace Blocker
 
         public override void Draw(GameTime gameTime)
         {
+            count++;
+            if (count % speed == 0)
+            {
+                slide++;
+                if (slide == slides.Count)
+                    slide = 0;
+                count = 0;
+            }
+
             spriteBatch.Begin();
-            spriteBatch.DrawString(font, text, textLocation, Color.White);
+            spriteBatch.Draw(slides[slide], block.GetPosition(), Color.White);
             spriteBatch.End();
 
             base.Draw(gameTime);

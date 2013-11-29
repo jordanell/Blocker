@@ -58,17 +58,17 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BlueBlock.png">
+    <Compile Include="Tiles\BlueBlock.png">
       <Name>BlueBlock</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="GreyBlock.png">
+    <Compile Include="Tiles\GreyBlock.png">
       <Name>GreyBlock</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="RedBlock.png">
+    <Compile Include="Tiles\RedBlock.png">
       <Name>RedBlock</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
@@ -110,7 +110,79 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Tiles\" />
+    <Compile Include="Fonts\Pericles18.spritefont">
+      <Name>Pericles18</Name>
+      <Importer>FontDescriptionImporter</Importer>
+      <Processor>FontDescriptionProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Fonts\Pericles24.spritefont">
+      <Name>Pericles24</Name>
+      <Importer>FontDescriptionImporter</Importer>
+      <Processor>FontDescriptionProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Buttons\GreenButton.png">
+      <Name>GreenButton</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Tiles\Matter\RedMatter\RedMatter1.png">
+      <Name>RedMatter1</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Tiles\Matter\RedMatter\RedMatter2.png">
+      <Name>RedMatter2</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Tiles\Matter\RedMatter\RedMatter3.png">
+      <Name>RedMatter3</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Tiles\Matter\RedMatter\RedMatter4.png">
+      <Name>RedMatter4</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Tiles\Matter\RedMatter\RedMatter5.png">
+      <Name>RedMatter5</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Tiles\Matter\BlueMatter\BlueMatter1.png">
+      <Name>BlueMatter1</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Tiles\Matter\BlueMatter\BlueMatter2.png">
+      <Name>BlueMatter2</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Tiles\Matter\BlueMatter\BlueMatter3.png">
+      <Name>BlueMatter3</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Tiles\Matter\BlueMatter\BlueMatter4.png">
+      <Name>BlueMatter4</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Tiles\Matter\BlueMatter\BlueMatter5.png">
+      <Name>BlueMatter5</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />
   <!--  To modify your build process, add your task inside one of the targets below and uncomment it. 

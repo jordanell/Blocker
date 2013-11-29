@@ -64,13 +64,22 @@
     <Reference Include="System.Net" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Animation.cs" />
     <Compile Include="Background.cs" />
+    <Compile Include="Block.cs" />
     <Compile Include="Button.cs" />
+    <Compile Include="HeadsUpDisplay.cs" />
     <Compile Include="Label.cs" />
+    <Compile Include="Level.cs" />
     <Compile Include="LevelSelector.cs" />
     <Compile Include="Manager.cs" />
+    <Compile Include="Matter.cs" />
     <Compile Include="Menu.cs" />
+    <Compile Include="MoveableBlock.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <None Include="Levels\level1.level">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Properties\AppManifest.xml">
       <XnaPlatformSpecific>true</XnaPlatformSpecific>
     </None>

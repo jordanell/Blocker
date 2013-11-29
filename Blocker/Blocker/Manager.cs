@@ -21,7 +21,10 @@ namespace Blocker
         private SpriteBatch spriteBatch;
 
         private Background background;
+
         private Menu menu;
+
+        private Level activeLevel;
 
         public Manager(Game game, SpriteBatch spriteBatch)
             : base(game)
@@ -44,6 +47,10 @@ namespace Blocker
             menu = new Menu(game, spriteBatch);
             menu.Initialize();
 
+            // Create the level
+            activeLevel = new Level(game, spriteBatch, 1);
+            activeLevel.Initialize();
+
             base.Initialize();
         }
 
@@ -56,8 +63,8 @@ namespace Blocker
             // Update the background
             background.Update(gameTime);
 
-            if (menu != null)
-                menu.Update(gameTime);
+            if (activeLevel != null)
+                activeLevel.Update(gameTime);
 
             base.Update(gameTime);
         }
@@ -71,8 +78,8 @@ namespace Blocker
             // Draw the background
             background.Draw(gameTime);
 
-            if (menu != null)
-                menu.Draw(gameTime);
+            if (activeLevel != null)
+                activeLevel.Draw(gameTime);
             
             base.Draw(gameTime);
         }

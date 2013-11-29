@@ -15,26 +15,22 @@ namespace Blocker
     /// <summary>
     /// This is a game component that implements IUpdateable.
     /// </summary>
-    public class Label : Microsoft.Xna.Framework.DrawableGameComponent
+    public class Block : Microsoft.Xna.Framework.DrawableGameComponent
     {
-        private Game game;
-        private SpriteBatch spriteBatch;
+        protected Game game;
+        protected SpriteBatch spriteBatch;
 
-        private SpriteFont font;
+        protected Texture2D blockTexture;
 
-        private String text;
+        protected Rectangle position;
 
-        private Rectangle destination;
-        Vector2 textLocation;
-
-        public Label(Game game, SpriteBatch spriteBatch, Rectangle destination, SpriteFont font, String text)
+        public Block(Game game, SpriteBatch spriteBatch, Texture2D texture, Rectangle position)
             : base(game)
         {
             this.game = game;
             this.spriteBatch = spriteBatch;
-            this.font = font;
-            this.text = text;
-            this.destination = destination;
+            this.blockTexture = texture;
+            this.position = position;
         }
 
         /// <summary>
@@ -43,23 +39,14 @@ namespace Blocker
         /// </summary>
         public override void Initialize()
         {
-            setTextLocation();
+            // TODO: Add your initialization code here
 
             base.Initialize();
         }
 
-        public void setText(String text)
+        public Rectangle GetPosition()
         {
-            this.text = text;
-            setTextLocation();
-        }
-
-        private void setTextLocation()
-        {
-            Vector2 size = font.MeasureString(text);
-            textLocation = new Vector2();
-            textLocation.X = destination.X + ((destination.Width / 2) - (size.X / 2));
-            textLocation.Y = destination.Y + ((destination.Height / 2) - (size.Y / 2));
+            return position;
         }
 
         /// <summary>
@@ -76,7 +63,7 @@ namespace Blocker
         public override void Draw(GameTime gameTime)
         {
             spriteBatch.Begin();
-            spriteBatch.DrawString(font, text, textLocation, Color.White);
+            spriteBatch.Draw(blockTexture, position, Color.White);
             spriteBatch.End();
 
             base.Draw(gameTime);
