@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+using Microsoft.Xna.Framework.Input.Touch;
 
 
 namespace Blocker
@@ -22,6 +23,7 @@ namespace Blocker
         private SpriteBatch spriteBatch;
 
         private int levelNumber;
+        public bool complete;
 
         private int blockWidth = 40;
         private int blockHeight = 40;
@@ -31,6 +33,12 @@ namespace Blocker
         private HeadsUpDisplay HUD;
 
         private Block[,] map = new Block[18,12];
+
+        private Player player;
+
+        private enum LevelState { Idle, Moving };
+
+        private LevelState state = LevelState.Idle;
 
         public Level(Game game, SpriteBatch spriteBatch, int levelNumber)
             : base(game)
@@ -139,6 +147,11 @@ namespace Blocker
                                 Color.Blue);
                             map[y, x].Initialize();
                             break;
+                        case 9:
+                            player = new Player(game, spriteBatch,
+                                new Rectangle((x * blockWidth), (hudBuffer + (y * blockHeight)), blockWidth, blockHeight));
+                            player.Initialize();
+                            break;
                     }
                 }
             }
@@ -150,9 +163,139 @@ namespace Blocker
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Update(GameTime gameTime)
         {
-            // TODO: Add your update code here
+            state = LevelState.Idle;
+            if (player.Getstate() == PlayerState.Moving)
+                state = LevelState.Moving;
+            
+            // Handle new gestures
+            while (TouchPanel.IsGestureAvailable)
+            {
+                if (state != LevelState.Idle)
+                    break;
+
+                GestureSample gs = TouchPanel.ReadGesture();
+                switch (gs.GestureType)
+                {
+                    case GestureType.VerticalDrag:
+                    case GestureType.HorizontalDrag:
+                        //ProcessGesture(gs.Delta * 10);
+                        break;
+                    case GestureType.Flick:
+                        ProcessGesture(gs.Delta);
+                        break;
+                }
+
+            }
+
+            player.Update(gameTime);
 
             base.Update(gameTime);
+        }
+
+        private Movement ProcessGesture(Vector2 delta)
+        {
+            Vector2 origin = new Vector2(
+                player.GetPosition().X / blockWidth, (player.GetPosition().Y / blockHeight) - 2);
+
+            // Get direction to move
+            MovementDirection direction;
+            if (Math.Abs(delta.Y) >= Math.Abs(delta.X))
+            {
+                if (delta.Y < 0)
+                    direction = MovementDirection.Up;
+                else
+                    direction = MovementDirection.Down;
+            }
+            else
+            {
+                if (delta.X < 0)
+                    direction = MovementDirection.Left;
+                else
+                    direction = MovementDirection.Right;
+            }
+
+            Vector2 destination = new Vector2(-1, -1);
+            switch (direction)
+            {
+                case MovementDirection.Left:
+                    destination = LeftDestination(origin);
+                    break;
+                case MovementDirection.Right:
+                    destination = RightDestination(origin);
+                    break;
+                case MovementDirection.Up:
+                    destination = UpDestination(origin);
+                    break;
+                case MovementDirection.Down:
+                    destination = DownDestination(origin);
+                    break;
+                default:
+                    break;
+            }
+
+            if (destination.X != -1 && destination != origin)
+            {
+                Movement movement = new Movement(game,
+                    new Rectangle(((int)origin.X * blockWidth), (hudBuffer + ((int)origin.Y * blockHeight)), blockWidth, blockHeight),
+                    new Rectangle(((int)destination.X * blockWidth), (hudBuffer + ((int)destination.Y * blockHeight)), blockWidth, blockHeight));
+                movement.Initialize();
+
+                player.Move(movement);
+                state = LevelState.Moving;
+            }
+
+
+            return null;
+        }
+
+        private Vector2 LeftDestination(Vector2 origin)
+        {
+            for (int x = (int)origin.X - 1; x >= 0; x--)
+            {
+                if (CellIsOccupied(new Vector2(x, origin.Y)))
+                    return new Vector2(x+1, origin.Y);
+            }
+            return origin;
+        }
+
+        private Vector2 RightDestination(Vector2 origin)
+        {
+            for (int x = (int)origin.X + 1; x < map.GetLength(1); x++)
+            {
+                if (CellIsOccupied(new Vector2(x, origin.Y)))
+                    return new Vector2(x-1, origin.Y);
+            }
+            return origin;
+        }
+
+        private Vector2 UpDestination(Vector2 origin)
+        {
+            for (int y = (int)origin.Y - 1; y >= 0; y--)
+            {
+                if (CellIsOccupied(new Vector2(origin.X, y)))
+                    return new Vector2(origin.X, y+1);
+            }
+            return origin;
+        }
+
+        private Vector2 DownDestination(Vector2 origin)
+        {
+            for (int y = (int)origin.Y + 1; y < map.GetLength(0); y++)
+            {
+                if (CellIsOccupied(new Vector2(origin.X, y)))
+                    return new Vector2(origin.X, y-1);
+            }
+            return origin;
+        }
+
+        private bool CellIsOccupied(Vector2 cell)
+        {
+            return (map[(int)cell.Y, (int)cell.X] != null);
+        }
+
+        private void ProcessTouch()
+        {
+            // TODO for moving blocks
         }
 
         public override void Draw(GameTime gameTime)
@@ -169,6 +312,9 @@ namespace Blocker
                         map[y, x].Draw(gameTime);
                 }
             }
+
+            // Draw player
+            player.Draw(gameTime);
 
 
             base.Draw(gameTime);

@@ -35,7 +35,11 @@ namespace Blocker
 
             // Set the resolution to use
             graphics.PreferredBackBufferWidth = 480;
-            graphics.PreferredBackBufferHeight = 800; 
+            graphics.PreferredBackBufferHeight = 800;
+
+            // Make vertical drag and flick the  gestures that we're interested in.
+            TouchPanel.EnabledGestures =
+                GestureType.VerticalDrag | GestureType.Flick;
         }
 
         /// <summary>
