@@ -33,10 +33,10 @@ namespace Blocker
         private int blueCount = 0;
 
         // Reset
-        private Button resetButton;
+        public Button resetButton;
 
         // Exit
-        private Button exitButton;
+        public Button exitButton;
 
         public HeadsUpDisplay(Game game, SpriteBatch spriteBatch)
             : base(game)
@@ -132,7 +132,8 @@ namespace Blocker
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Update(GameTime gameTime)
         {
-            // TODO: Add your update code here
+            resetButton.Update(gameTime);
+            exitButton.Update(gameTime);
 
             base.Update(gameTime);
         }

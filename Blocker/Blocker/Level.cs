@@ -24,6 +24,7 @@ namespace Blocker
 
         private int levelNumber;
         public bool complete;
+        public bool quit;
 
         private int blockWidth = 40;
         private int blockHeight = 40;
@@ -212,6 +213,16 @@ namespace Blocker
                 }
 
             }
+
+            HUD.Update(gameTime);
+
+            // Check for reset
+            if (HUD.resetButton.state == TouchButtonState.Clicked)
+                Initialize();
+
+            // Check for Exit()
+            if (HUD.exitButton.state == TouchButtonState.Clicked)
+                quit = true;
 
             exit.Update(gameTime);
             player.Update(gameTime);
