@@ -26,15 +26,17 @@ namespace Blocker
         private Texture2D texture;
 
         private PlayerState state = PlayerState.Idle;
-
         private Movement movement;
 
-        public Player(Game game, SpriteBatch spriteBatch, Rectangle position)
+        private Level level;
+
+        public Player(Game game, SpriteBatch spriteBatch, Rectangle position, Level level)
             : base(game)
         {
             this.game = game;
             this.spriteBatch = spriteBatch;
             this.position = position;
+            this.level = level;
         }
 
         /// <summary>
@@ -78,6 +80,21 @@ namespace Blocker
             else if (state == PlayerState.Moving)
             {
                 movement.Update(gameTime);
+
+                // Check collisions with matter
+                for (int y = 0; y < level.map.GetLength(0); y++)
+                {
+                    for (int x = 0; x < level.map.GetLength(1); x++)
+                    {
+                        if(level.map[y, x] != null && level.map[y, x].GetType() == typeof(Matter))
+                        {
+                            if(movement.position.Intersects(level.map[y, x].GetPosition()))
+                                level.AddMatterAt(x, y);
+                        }
+                    }
+                }
+           
+                // Check if movement is complete
                 if (movement.complete)
                 {
                     state = PlayerState.Idle;

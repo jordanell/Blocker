@@ -17,7 +17,7 @@ namespace Blocker
     /// </summary>
     public class Matter : Block
     {
-        private Color color;
+        public Color color;
 
         private Animation animation;
 

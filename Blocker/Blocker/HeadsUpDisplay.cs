@@ -28,7 +28,9 @@ namespace Blocker
         private Texture2D redMatter;
         private Texture2D blueMatter;
         private Label red;
+        private int redCount = 0;
         private Label blue;
+        private int blueCount = 0;
 
         // Reset
         private Button resetButton;
@@ -88,6 +90,18 @@ namespace Blocker
         {
             this.fuelLeft--;
             this.fuel.setText("Fuel: " + "Fuel: " + Convert.ToString(fuelLeft));
+        }
+
+        public void AddRedMatter()
+        {
+            redCount++;
+            red.setText(Convert.ToString(redCount));
+        }
+
+        public void AddBlueMatter()
+        {
+            blueCount++;
+            blue.setText(Convert.ToString(blueCount));
         }
 
         /// <summary>

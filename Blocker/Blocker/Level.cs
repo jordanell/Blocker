@@ -32,7 +32,7 @@ namespace Blocker
 
         private HeadsUpDisplay HUD;
 
-        private Block[,] map = new Block[18,12];
+        public Block[,] map = new Block[18,12];
 
         private Player player;
 
@@ -149,7 +149,8 @@ namespace Blocker
                             break;
                         case 9:
                             player = new Player(game, spriteBatch,
-                                new Rectangle((x * blockWidth), (hudBuffer + (y * blockHeight)), blockWidth, blockHeight));
+                                new Rectangle((x * blockWidth), (hudBuffer + (y * blockHeight)), blockWidth, blockHeight),
+                                this);
                             player.Initialize();
                             break;
                     }
@@ -290,12 +291,25 @@ namespace Blocker
 
         private bool CellIsOccupied(Vector2 cell)
         {
-            return (map[(int)cell.Y, (int)cell.X] != null);
+            return (map[(int)cell.Y, (int)cell.X] != null && 
+                (map[(int)cell.Y, (int)cell.X].GetType() != typeof(Matter)));
         }
 
         private void ProcessTouch()
         {
             // TODO for moving blocks
+        }
+
+        public void AddMatterAt(int x, int y)
+        {
+            Matter matter = (Matter)map[y, x];
+            if (matter.color == Color.Red)
+                HUD.AddRedMatter();
+            else if (matter.color == Color.Blue)
+                HUD.AddBlueMatter();
+
+            // Delete matter from map
+            map[y, x] = null;
         }
 
         public override void Draw(GameTime gameTime)
