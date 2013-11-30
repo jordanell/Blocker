@@ -68,6 +68,7 @@
     <Compile Include="Background.cs" />
     <Compile Include="Block.cs" />
     <Compile Include="Button.cs" />
+    <Compile Include="Exit.cs" />
     <Compile Include="HeadsUpDisplay.cs" />
     <Compile Include="Label.cs" />
     <Compile Include="Level.cs" />

@@ -131,6 +131,33 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Tiles\Matter\BlueMatter\BlueMatter1.png">
+      <Name>BlueMatter1</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Tiles\Matter\BlueMatter\BlueMatter2.png">
+      <Name>BlueMatter2</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Tiles\Matter\BlueMatter\BlueMatter3.png">
+      <Name>BlueMatter3</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Tiles\Matter\BlueMatter\BlueMatter4.png">
+      <Name>BlueMatter4</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Tiles\Matter\BlueMatter\BlueMatter5.png">
+      <Name>BlueMatter5</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="Tiles\Matter\RedMatter\RedMatter1.png">
       <Name>RedMatter1</Name>
       <Importer>TextureImporter</Importer>
@@ -158,28 +185,8 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Tiles\Matter\BlueMatter\BlueMatter1.png">
-      <Name>BlueMatter1</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="Tiles\Matter\BlueMatter\BlueMatter2.png">
-      <Name>BlueMatter2</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="Tiles\Matter\BlueMatter\BlueMatter3.png">
-      <Name>BlueMatter3</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="Tiles\Matter\BlueMatter\BlueMatter4.png">
-      <Name>BlueMatter4</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="Tiles\Matter\BlueMatter\BlueMatter5.png">
-      <Name>BlueMatter5</Name>
+    <Compile Include="Tiles\Exit.png">
+      <Name>Exit</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>

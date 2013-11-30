@@ -35,9 +35,9 @@ namespace Blocker
         public Block[,] map = new Block[18,12];
 
         private Player player;
+        private Exit exit;
 
         private enum LevelState { Idle, Moving };
-
         private LevelState state = LevelState.Idle;
 
         public Level(Game game, SpriteBatch spriteBatch, int levelNumber)
@@ -147,6 +147,11 @@ namespace Blocker
                                 Color.Blue);
                             map[y, x].Initialize();
                             break;
+                        case 8:
+                            exit = new Exit(game, spriteBatch, null,
+                                new Rectangle((x * blockWidth), (hudBuffer + (y * blockHeight)), blockWidth, blockHeight));
+                            exit.Initialize();
+                            break;
                         case 9:
                             player = new Player(game, spriteBatch,
                                 new Rectangle((x * blockWidth), (hudBuffer + (y * blockHeight)), blockWidth, blockHeight),
@@ -167,6 +172,13 @@ namespace Blocker
             state = LevelState.Idle;
             if (player.Getstate() == PlayerState.Moving)
                 state = LevelState.Moving;
+
+            // Check for win condition
+            if (state == LevelState.Idle)
+            {
+                if (player.GetPosition().Intersects(exit.GetPosition()))
+                    complete = true;
+            }
 
             // Update blocks
             for (int y = 0; y < map.GetLength(0); y++)
@@ -201,6 +213,7 @@ namespace Blocker
 
             }
 
+            exit.Update(gameTime);
             player.Update(gameTime);
 
             base.Update(gameTime);
@@ -432,7 +445,8 @@ namespace Blocker
         private bool CellIsOccupied(Vector2 cell)
         {
             return (map[(int)cell.Y, (int)cell.X] != null && 
-                (map[(int)cell.Y, (int)cell.X].GetType() != typeof(Matter)));
+                (map[(int)cell.Y, (int)cell.X].GetType() != typeof(Matter)) &&
+                (map[(int)cell.Y, (int)cell.X].GetType() != typeof(Exit)));
         }
 
         private void ProcessTouch()
@@ -466,6 +480,9 @@ namespace Blocker
                         map[y, x].Draw(gameTime);
                 }
             }
+
+            // Draw the exit
+            exit.Draw(gameTime);
 
             // Draw player
             player.Draw(gameTime);
