@@ -12,12 +12,17 @@ using Microsoft.Xna.Framework.Media;
 
 namespace Blocker
 {
+    public enum MoveableBlockState { Idle, Moving }
     /// <summary>
     /// This is a game component that implements IUpdateable.
     /// </summary>
     public class MoveableBlock : Block
     {
-        private Color color;
+        public Color color;
+
+        private MoveableBlockState state = MoveableBlockState.Idle;
+
+        private Movement movement;
 
         public MoveableBlock(Game game, SpriteBatch spriteBatch, Texture2D texture, Rectangle position, Color color)
             : base(game, spriteBatch, texture, position)
@@ -35,21 +40,50 @@ namespace Blocker
             base.Initialize();
         }
 
+        public void Move(Movement movement)
+        {
+            this.movement = movement;
+            position = movement.GetEnd();
+            state = MoveableBlockState.Moving;
+        }
+
         /// <summary>
         /// Allows the game component to update itself.
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Update(GameTime gameTime)
         {
+            if (state == MoveableBlockState.Idle)
+            {
+                // TODO
+            }
+            else if (state == MoveableBlockState.Moving)
+            {
+                movement.Update(gameTime);
 
-            
+                // Check if movement is complete
+                if (movement.complete)
+                {
+                    state = MoveableBlockState.Idle;
+                    movement = null;
+                }
+            }
         }
 
         public override void Draw(GameTime gameTime)
         {
-            spriteBatch.Begin();
-            spriteBatch.Draw(blockTexture, position, Color.White);
-            spriteBatch.End();
+            if (state == MoveableBlockState.Idle)
+            {
+                spriteBatch.Begin();
+                spriteBatch.Draw(blockTexture, position, Color.White);
+                spriteBatch.End();
+            }
+            else if (state == MoveableBlockState.Moving)
+            {
+                spriteBatch.Begin();
+                spriteBatch.Draw(blockTexture, movement.position, Color.White);
+                spriteBatch.End();
+            }
         }
     }
 }

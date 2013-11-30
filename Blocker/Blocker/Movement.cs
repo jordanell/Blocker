@@ -21,7 +21,7 @@ namespace Blocker
         private Game game;
 
         private Rectangle start;
-        private Rectangle end;
+        public Rectangle end;
         public Rectangle position;
 
         private MovementDirection direction;

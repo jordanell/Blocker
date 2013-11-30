@@ -167,6 +167,16 @@ namespace Blocker
             state = LevelState.Idle;
             if (player.Getstate() == PlayerState.Moving)
                 state = LevelState.Moving;
+
+            // Update blocks
+            for (int y = 0; y < map.GetLength(0); y++)
+            {
+                for (int x = 0; x < map.GetLength(1); x++)
+                {
+                    if (map[y, x] != null)
+                        map[y, x].Update(gameTime);
+                }
+            }
             
             // Handle new gestures
             while (TouchPanel.IsGestureAvailable)
@@ -179,10 +189,13 @@ namespace Blocker
                 {
                     case GestureType.VerticalDrag:
                     case GestureType.HorizontalDrag:
-                        //ProcessGesture(gs.Delta * 10);
+                        //ProcessPlayerMove(gs.Delta * 10);
                         break;
                     case GestureType.Flick:
-                        ProcessGesture(gs.Delta);
+                        ProcessPlayerMove(gs.Delta);
+                        break;
+                    case GestureType.DoubleTap:
+                        ProcessPush(gs.Position);
                         break;
                 }
 
@@ -193,7 +206,7 @@ namespace Blocker
             base.Update(gameTime);
         }
 
-        private Movement ProcessGesture(Vector2 delta)
+        private void ProcessPlayerMove(Vector2 delta)
         {
             Vector2 origin = new Vector2(
                 player.GetPosition().X / blockWidth, (player.GetPosition().Y / blockHeight) - 2);
@@ -244,9 +257,136 @@ namespace Blocker
                 player.Move(movement);
                 state = LevelState.Moving;
             }
+        }
 
+        private void ProcessPush(Vector2 position)
+        {
+            Vector2 delta = new Vector2(player.GetPosition().X - position.X, player.GetPosition().Y - position.Y);
 
+            // Get direction to push
+            MovementDirection direction;
+            if (Math.Abs(delta.Y) >= Math.Abs(delta.X))
+            {
+                if (delta.Y > 0)
+                    direction = MovementDirection.Up;
+                else
+                    direction = MovementDirection.Down;
+            }
+            else
+            {
+                if (delta.X < 0)
+                    direction = MovementDirection.Left;
+                else
+                    direction = MovementDirection.Right;
+            }
+
+            Vector2 origin = AcquireTarget(delta, direction);
+            Block target = BlockAt((int)origin.X, (int)origin.Y);
+
+            if (target.GetType() == typeof(MoveableBlock))
+            {
+                Color color = ((MoveableBlock)target).color;
+                if (color == Color.Red)
+                {
+                    Movement move = GetBlockMovement(origin, direction);
+                    if (move != null && HUD.GetRedMatter() > 0)
+                    {
+                        ((MoveableBlock)target).Move(move);
+                        HUD.DecreaseRedMatter();
+                        map[(int)origin.Y, (int)origin.X] = null;
+                        Vector2 dest = GridIndexOf(new Vector2(move.end.X, move.end.Y));
+                        map[(int)dest.Y, (int)dest.X] = target;
+                    }
+                }
+                else if (color == Color.Blue)
+                {
+                    Movement move = GetBlockMovement(origin, direction);
+                    if (move != null && HUD.GetBlueMatter() > 0)
+                    {
+                        ((MoveableBlock)target).Move(move);
+                        HUD.DecreaseBlueMatter();
+                        map[(int)origin.Y, (int)origin.X] = null;
+                        Vector2 dest = GridIndexOf(new Vector2(move.end.X, move.end.Y));
+                        map[(int)dest.Y, (int)dest.X] = target;
+                    }
+
+                }
+            }
+
+        }
+
+        private Vector2 GridIndexOf(Vector2 vector)
+        {
+            return new Vector2(
+                vector.X / blockWidth, (vector.Y / blockHeight) - 2);
+        }
+
+        private Vector2 AcquireTarget(Vector2 delta, MovementDirection direction)
+        {
+            Vector2 origin = new Vector2(
+                player.GetPosition().X / blockWidth, (player.GetPosition().Y / blockHeight) - 2);
+
+            Vector2 target = new Vector2(-1, -1);
+            switch (direction)
+            {
+                case MovementDirection.Left:
+                    target = LeftDestination(origin);
+                    target.X -= 1;
+                    break;
+                case MovementDirection.Right:
+                    target = RightDestination(origin);
+                    target.X += 1;
+                    break;
+                case MovementDirection.Up:
+                    target = UpDestination(origin);
+                    target.Y -= 1;
+                    break;
+                case MovementDirection.Down:
+                    target = DownDestination(origin);
+                    target.Y += 1;
+                    break;
+                default:
+                    break;
+            }
+            return target;
+        }
+
+        private Movement GetBlockMovement(Vector2 origin, MovementDirection direction)
+        {
+            Vector2 destination = new Vector2(-1, -1);
+            switch (direction)
+            {
+                case MovementDirection.Left:
+                    destination = LeftDestination(origin);
+                    break;
+                case MovementDirection.Right:
+                    destination = RightDestination(origin);
+                    break;
+                case MovementDirection.Up:
+                    destination = UpDestination(origin);
+                    break;
+                case MovementDirection.Down:
+                    destination = DownDestination(origin);
+                    break;
+                default:
+                    break;
+            }
+
+            if (destination.X != -1 && destination != origin)
+            {
+                Movement movement = new Movement(game,
+                    new Rectangle(((int)origin.X * blockWidth), (hudBuffer + ((int)origin.Y * blockHeight)), blockWidth, blockHeight),
+                    new Rectangle(((int)destination.X * blockWidth), (hudBuffer + ((int)destination.Y * blockHeight)), blockWidth, blockHeight));
+                movement.Initialize();
+
+                return movement;
+            }
             return null;
+        }
+
+        private Block BlockAt(int x, int y)
+        {
+            return map[y, x];
         }
 
         private Vector2 LeftDestination(Vector2 origin)

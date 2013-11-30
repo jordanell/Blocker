@@ -104,6 +104,28 @@ namespace Blocker
             blue.setText(Convert.ToString(blueCount));
         }
 
+        public int GetRedMatter()
+        {
+            return redCount;
+        }
+
+        public int GetBlueMatter()
+        {
+            return blueCount;
+        }
+
+        public void DecreaseRedMatter()
+        {
+            redCount--;
+            red.setText(Convert.ToString(redCount));
+        }
+
+        public void DecreaseBlueMatter()
+        {
+            blueCount--;
+            blue.setText(Convert.ToString(blueCount));
+        }
+
         /// <summary>
         /// Allows the game component to update itself.
         /// </summary>

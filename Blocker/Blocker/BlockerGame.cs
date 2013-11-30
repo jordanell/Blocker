@@ -39,7 +39,7 @@ namespace Blocker
 
             // Make vertical drag and flick the  gestures that we're interested in.
             TouchPanel.EnabledGestures =
-                GestureType.VerticalDrag | GestureType.Flick;
+                GestureType.VerticalDrag | GestureType.Flick | GestureType.DoubleTap | GestureType.Tap;
         }
 
         /// <summary>
