@@ -82,13 +82,13 @@ namespace Blocker
                 movement.Update(gameTime);
 
                 // Check collisions with matter
-                for (int y = 0; y < level.map.GetLength(0); y++)
+                for (int y = 0; y < level.Map.GetLength(0); y++)
                 {
-                    for (int x = 0; x < level.map.GetLength(1); x++)
+                    for (int x = 0; x < level.Map.GetLength(1); x++)
                     {
-                        if(level.map[y, x] != null && level.map[y, x].GetType() == typeof(Matter))
+                        if (level.Map[y, x] != null && level.Map[y, x].GetType() == typeof(Matter))
                         {
-                            if(movement.position.Intersects(level.map[y, x].GetPosition()))
+                            if (movement.position.Intersects(level.Map[y, x].GetPosition()))
                                 level.AddMatterAt(x, y);
                         }
                     }

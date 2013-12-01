@@ -79,7 +79,7 @@ namespace Blocker
             {
                 level.Update(gameTime);
 
-                if (level.quit)
+                if (level.Quit)
                 {
                     menu = new Menu(game, spriteBatch);
                     level = null;

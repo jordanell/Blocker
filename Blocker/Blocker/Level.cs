@@ -22,19 +22,24 @@ namespace Blocker
         private Game game;
         private SpriteBatch spriteBatch;
 
+        // Meta information for level
         private int levelNumber;
-        public bool complete;
-        public bool quit;
+        private bool complete;
+        public bool Complete { get { return complete; } private set { complete = value; } }
+        private bool quit;
+        public bool Quit { get { return quit; } private set { quit = value; } }
 
+        // Level layout
         private int blockWidth = 40;
         private int blockHeight = 40;
-
         private int hudBuffer = 80;
 
+        // Level elements
         private HeadsUpDisplay HUD;
+        private Block[,] map;
+        public Block[,] Map { get { return map; } private set { map = value; } }
 
-        public Block[,] map = new Block[18,12];
-
+        // Game objects
         private Player player;
         private Exit exit;
 
@@ -60,6 +65,7 @@ namespace Blocker
         public override void Initialize()
         {
             HUD = new HeadsUpDisplay(game, spriteBatch);
+            map = new Block[18, 12];
 
             LoadLevel();
 
@@ -75,8 +81,7 @@ namespace Blocker
 
             Stream stream = TitleContainer.OpenStream(levelFile);
             StreamReader sreader = new System.IO.StreamReader(stream);
-            bool readingTextures = false;
-            bool readingLayout = false;
+            bool readingTextures = false, readingLayout = false, readingFuel = false;
             while (!sreader.EndOfStream)
             {
                 string line = sreader.ReadLine().Trim();
@@ -86,12 +91,22 @@ namespace Blocker
                 {
                     readingTextures = true;
                     readingLayout = false;
+                    readingFuel = false;
                 }
                 else if (line.Contains("[Layout]"))
                 {
                     readingLayout = true;
                     readingTextures = false;
+                    readingFuel = false;
                 }
+                else if (line.Contains("[Fuel]"))
+                {
+                    readingFuel = true;
+                    readingLayout = false;
+                    readingTextures = false;
+                }
+                else if (readingFuel)
+                    HUD.Fuel = Convert.ToInt32(line);
                 else if (readingTextures)
                     textureNames.Add(line);
                 else if (readingLayout)
@@ -173,6 +188,7 @@ namespace Blocker
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Update(GameTime gameTime)
         {
+            // Handles early input cancelling
             if (timer == null)
                 timer = new Timer(game, 1000);
             timer.Update(gameTime);
@@ -201,37 +217,44 @@ namespace Blocker
             }
             
             // Handle new gestures
-            while (TouchPanel.IsGestureAvailable)
+            if (state == LevelState.Idle) 
             {
-                if (state != LevelState.Idle)
-                    break;
-
-                GestureSample gs = TouchPanel.ReadGesture();
-                switch (gs.GestureType)
+                while (TouchPanel.IsGestureAvailable)
                 {
-                    case GestureType.VerticalDrag:
-                    case GestureType.HorizontalDrag:
-                        //ProcessPlayerMove(gs.Delta * 10);
+                    if (state != LevelState.Idle)
                         break;
-                    case GestureType.Flick:
-                        ProcessPlayerMove(gs.Delta);
-                        break;
-                    case GestureType.DoubleTap:
-                        ProcessPush(gs.Position);
-                        break;
-                }
 
+                    GestureSample gs = TouchPanel.ReadGesture();
+                    switch (gs.GestureType)
+                    {
+                        case GestureType.VerticalDrag:
+                        case GestureType.HorizontalDrag:
+                        case GestureType.FreeDrag:
+                            if (SignificantDrag(gs))
+                                ProcessPlayerMove(gs.Delta);
+                            break;
+                        case GestureType.Flick:
+                            ProcessPlayerMove(gs.Delta);
+                            break;
+                        case GestureType.DoubleTap:
+                            ProcessPush(gs.Position);
+                            break;
+                    }
+                }
             }
 
             HUD.Update(gameTime);
 
             // Check for reset
-            if (HUD.resetButton.state == TouchButtonState.Clicked)
+            if (HUD.Reset)
+            {
                 Initialize();
+                timer = null;
+            }
 
             // Check for Exit()
-            if (HUD.exitButton.state == TouchButtonState.Clicked)
-                quit = true;
+            if (HUD.Exit)
+                Quit = true;
 
             exit.Update(gameTime);
             player.Update(gameTime);
@@ -239,49 +262,23 @@ namespace Blocker
             base.Update(gameTime);
         }
 
+        private bool SignificantDrag(GestureSample gs)
+        {
+            return (Math.Abs(gs.Delta.X) > 5 || Math.Abs(gs.Delta.Y) > 5);
+        }
+
         private void ProcessPlayerMove(Vector2 delta)
         {
             Vector2 origin = new Vector2(
                 player.GetPosition().X / blockWidth, (player.GetPosition().Y / blockHeight) - 2);
 
-            // Get direction to move
-            MovementDirection direction;
-            if (Math.Abs(delta.Y) >= Math.Abs(delta.X))
-            {
-                if (delta.Y < 0)
-                    direction = MovementDirection.Up;
-                else
-                    direction = MovementDirection.Down;
-            }
-            else
-            {
-                if (delta.X < 0)
-                    direction = MovementDirection.Left;
-                else
-                    direction = MovementDirection.Right;
-            }
+            // Get direction and destination of move
+            Direction direction = GetDirection(delta);
+            Vector2 destination = GetDestination(origin, direction);
 
-            Vector2 destination = new Vector2(-1, -1);
-            switch (direction)
+            if (destination.X != -1 && destination != origin && HUD.Fuel > 0)
             {
-                case MovementDirection.Left:
-                    destination = LeftDestination(origin);
-                    break;
-                case MovementDirection.Right:
-                    destination = RightDestination(origin);
-                    break;
-                case MovementDirection.Up:
-                    destination = UpDestination(origin);
-                    break;
-                case MovementDirection.Down:
-                    destination = DownDestination(origin);
-                    break;
-                default:
-                    break;
-            }
-
-            if (destination.X != -1 && destination != origin)
-            {
+                HUD.DecreaseFuel();
                 Movement movement = new Movement(game,
                     new Rectangle(((int)origin.X * blockWidth), (hudBuffer + ((int)origin.Y * blockHeight)), blockWidth, blockHeight),
                     new Rectangle(((int)destination.X * blockWidth), (hudBuffer + ((int)destination.Y * blockHeight)), blockWidth, blockHeight));
@@ -292,29 +289,48 @@ namespace Blocker
             }
         }
 
-        private void ProcessPush(Vector2 position)
+        private Direction GetDirection(Vector2 delta)
         {
-            Vector2 delta = new Vector2(player.GetPosition().X - position.X, player.GetPosition().Y - position.Y);
-
-            // Get direction to push
-            MovementDirection direction;
             if (Math.Abs(delta.Y) >= Math.Abs(delta.X))
             {
-                if (delta.Y > 0)
-                    direction = MovementDirection.Up;
+                if (delta.Y < 0)
+                    return Direction.Up;
                 else
-                    direction = MovementDirection.Down;
+                    return Direction.Down;
             }
             else
             {
                 if (delta.X < 0)
-                    direction = MovementDirection.Left;
+                    return Direction.Left;
                 else
-                    direction = MovementDirection.Right;
+                    return Direction.Right;
+            }
+        }
+
+        private Vector2 GetDestination(Vector2 origin, Direction direction)
+        {
+            switch (direction)
+            {
+                case Direction.Left:
+                    return LeftDestination(origin);
+                case Direction.Right:
+                    return RightDestination(origin);
+                case Direction.Up:
+                    return UpDestination(origin);
+                case Direction.Down:
+                    return DownDestination(origin);
             }
 
+            return new Vector2(-1, -1);
+        }
+
+        private void ProcessPush(Vector2 position)
+        {
+            Vector2 delta = new Vector2(player.GetPosition().X - position.X, position.Y - player.GetPosition().Y);
+
+            Direction direction = GetDirection(delta);
             Vector2 origin = AcquireTarget(delta, direction);
-            Block target = BlockAt((int)origin.X, (int)origin.Y);
+            Block target = map[(int)origin.Y, (int)origin.X];
 
             if (target.GetType() == typeof(MoveableBlock))
             {
@@ -354,7 +370,7 @@ namespace Blocker
                 vector.X / blockWidth, (vector.Y / blockHeight) - 2);
         }
 
-        private Vector2 AcquireTarget(Vector2 delta, MovementDirection direction)
+        private Vector2 AcquireTarget(Vector2 delta, Direction direction)
         {
             Vector2 origin = new Vector2(
                 player.GetPosition().X / blockWidth, (player.GetPosition().Y / blockHeight) - 2);
@@ -362,19 +378,19 @@ namespace Blocker
             Vector2 target = new Vector2(-1, -1);
             switch (direction)
             {
-                case MovementDirection.Left:
+                case Direction.Left:
                     target = LeftDestination(origin);
                     target.X -= 1;
                     break;
-                case MovementDirection.Right:
+                case Direction.Right:
                     target = RightDestination(origin);
                     target.X += 1;
                     break;
-                case MovementDirection.Up:
+                case Direction.Up:
                     target = UpDestination(origin);
                     target.Y -= 1;
                     break;
-                case MovementDirection.Down:
+                case Direction.Down:
                     target = DownDestination(origin);
                     target.Y += 1;
                     break;
@@ -384,27 +400,9 @@ namespace Blocker
             return target;
         }
 
-        private Movement GetBlockMovement(Vector2 origin, MovementDirection direction)
+        private Movement GetBlockMovement(Vector2 origin, Direction direction)
         {
-            Vector2 destination = new Vector2(-1, -1);
-            switch (direction)
-            {
-                case MovementDirection.Left:
-                    destination = LeftDestination(origin);
-                    break;
-                case MovementDirection.Right:
-                    destination = RightDestination(origin);
-                    break;
-                case MovementDirection.Up:
-                    destination = UpDestination(origin);
-                    break;
-                case MovementDirection.Down:
-                    destination = DownDestination(origin);
-                    break;
-                default:
-                    break;
-            }
-
+            Vector2 destination = GetDestination(origin, direction);
             if (destination.X != -1 && destination != origin)
             {
                 Movement movement = new Movement(game,
@@ -415,11 +413,6 @@ namespace Blocker
                 return movement;
             }
             return null;
-        }
-
-        private Block BlockAt(int x, int y)
-        {
-            return map[y, x];
         }
 
         private Vector2 LeftDestination(Vector2 origin)
@@ -467,11 +460,6 @@ namespace Blocker
             return (map[(int)cell.Y, (int)cell.X] != null && 
                 (map[(int)cell.Y, (int)cell.X].GetType() != typeof(Matter)) &&
                 (map[(int)cell.Y, (int)cell.X].GetType() != typeof(Exit)));
-        }
-
-        private void ProcessTouch()
-        {
-            // TODO for moving blocks
         }
 
         public void AddMatterAt(int x, int y)

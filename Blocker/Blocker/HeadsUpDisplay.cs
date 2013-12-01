@@ -26,7 +26,7 @@ namespace Blocker
         public int Fuel 
         {
             get { return fuel; }
-            private set 
+            set 
             { 
                 fuel = value;
                 fuelLabel.Text = "Fuel: " + Convert.ToString(value);
@@ -61,7 +61,16 @@ namespace Blocker
 
         // Buttons
         public Button resetButton;
+        private bool reset = false;
+        public bool Reset
+        {
+            get { return (resetButton.state == TouchButtonState.Clicked); }
+        }
         public Button exitButton;
+        public bool Exit
+        {
+            get { return (exitButton.state == TouchButtonState.Clicked); }
+        }
 
         public HeadsUpDisplay(Game game, SpriteBatch spriteBatch)
             : base(game)

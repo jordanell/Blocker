@@ -12,7 +12,7 @@ using Microsoft.Xna.Framework.Media;
 
 namespace Blocker
 {
-    public enum MovementDirection { Up, Down, Left, Right }
+    public enum Direction { Up, Down, Left, Right }
     /// <summary>
     /// This is a game component that implements IUpdateable.
     /// </summary>
@@ -24,7 +24,7 @@ namespace Blocker
         public Rectangle end;
         public Rectangle position;
 
-        private MovementDirection direction;
+        private Direction direction;
 
         private int tileWidth = 40;
         private int tileHeight = 40;
@@ -56,17 +56,17 @@ namespace Blocker
             {
                 maxTime = Math.Abs(((start.X - end.X) / tileWidth) * timePerTile);
                 if (start.X > end.X)
-                    direction = MovementDirection.Left;
+                    direction = Direction.Left;
                 else
-                    direction = MovementDirection.Right;
+                    direction = Direction.Right;
             }
             else if (start.Y != end.Y)
             {
                 maxTime = Math.Abs(((start.Y - end.Y) / tileHeight) * timePerTile);
                 if (start.Y > end.Y)
-                    direction = MovementDirection.Up;
+                    direction = Direction.Up;
                 else
-                    direction = MovementDirection.Down;
+                    direction = Direction.Down;
             }
 
             base.Initialize();
@@ -98,16 +98,16 @@ namespace Blocker
 
             switch (direction)
             {
-                case MovementDirection.Up:
+                case Direction.Up:
                     position.Y = start.Y - (int)((start.Y - end.Y) * completed);
                     break;
-                case MovementDirection.Down:
+                case Direction.Down:
                     position.Y = start.Y + (int)((end.Y - start.Y) * completed);
                     break;
-                case MovementDirection.Left:
+                case Direction.Left:
                     position.X = start.X - (int)((start.X - end.X) * completed);
                     break;
-                case MovementDirection.Right:
+                case Direction.Right:
                     position.X = start.X + (int)((end.X - start.X) * completed);
                     break;
             }
