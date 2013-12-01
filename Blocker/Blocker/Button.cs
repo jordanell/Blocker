@@ -94,6 +94,9 @@ namespace Blocker
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Update(GameTime gameTime)
         {
+            if (!enabled)
+                return;
+
             TouchCollection touchCollection = TouchPanel.GetState();
             foreach (TouchLocation touch in touchCollection)
             {
@@ -115,7 +118,7 @@ namespace Blocker
             else
             {
                 spriteBatch.Draw(texture, destination, Color.Silver);
-                spriteBatch.DrawString(font, text, textLocation, Color.Silver);
+                spriteBatch.DrawString(font, text, textLocation, Color.Red);
             }
 
             spriteBatch.End();

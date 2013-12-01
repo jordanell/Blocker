@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using Microsoft.Xna.Framework.Input.Touch;
+using System.IO.IsolatedStorage;
 
 
 namespace Blocker
@@ -168,9 +169,8 @@ namespace Blocker
             if (playButton.state == TouchButtonState.Clicked)
             {
                 UnloadMainMenu();
-                // Fix this once saves are implemented
                 LoadLevel = true;
-                LevelNumber = 1;
+                LevelNumber = TopLevel() + 1;
             }
 
             else if (levelSelectButton.state == TouchButtonState.Clicked)
@@ -189,6 +189,30 @@ namespace Blocker
 
             else if (exitButton.state == TouchButtonState.Clicked)
                 game.Exit();
+        }
+
+        private int TopLevel()
+        {
+            int topLevel = 0;
+
+            using (IsolatedStorageFile gameStorage = IsolatedStorageFile.GetUserStoreForApplication())
+            {
+                if (gameStorage.FileExists("completedLevels"))
+                {
+                    using (IsolatedStorageFileStream fs = gameStorage.OpenFile("completedLevels", System.IO.FileMode.Open))
+                    {
+                        if (fs != null)
+                        {
+                            byte[] bytes = new byte[10];
+                            int x = fs.Read(bytes, 0, 10);
+                            if (x > 0)
+                                topLevel = System.BitConverter.ToInt32(bytes, 0);
+                        }
+                    }
+                }
+            }
+
+            return topLevel;
         }
 
         private void UpdateLevelSelection(GameTime gameTime)
@@ -216,12 +240,30 @@ namespace Blocker
             soundNo.Update(gameTime);
             reset.Update(gameTime);
 
+            if (reset.state == TouchButtonState.Clicked)
+                ResetLevels();
+
             // Monitor the back button
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
             {
                 state = MenuState.Main;
                 UnloadSettings();
                 LoadMainMenu();
+            }
+        }
+
+        private void ResetLevels()
+        {
+            IsolatedStorageFile gameStorage = IsolatedStorageFile.GetUserStoreForApplication();
+            IsolatedStorageFileStream fs = null;
+
+            using (fs = gameStorage.CreateFile("completedLevels"))
+            {
+                if (fs != null)
+                {
+                    byte[] bytes = System.BitConverter.GetBytes(0);
+                    fs.Write(bytes, 0, bytes.Length);
+                }
             }
         }
 

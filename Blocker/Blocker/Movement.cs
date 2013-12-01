@@ -29,7 +29,7 @@ namespace Blocker
         private int tileWidth = 40;
         private int tileHeight = 40;
 
-        private int timePerTile = 300;
+        private int timePerTile = 150;
 
         private int startTime = -1;
         private int maxTime;

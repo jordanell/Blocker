@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+using System.IO.IsolatedStorage;
 
 
 namespace Blocker
@@ -45,6 +46,8 @@ namespace Blocker
 
             selector = new List<List<Button>>();
 
+            int topLevel = TopLevel();
+
             for (int y = 0; y <= 4; y++)
             {
                 List<Button> row = new List<Button>();
@@ -53,12 +56,38 @@ namespace Blocker
                     Button button = new Button(game, spriteBatch, 
                                                new Rectangle((30+(x*90)), (300+(y*90)), 60, 60), blueButton, menuFont,
                                                Convert.ToString((y * 5) + x + 1));
+                    if ((y * 5) + x + 1 > topLevel + 1)
+                        button.enabled = false;
                     row.Add(button);
                 }
                 selector.Add(row);
             }
 
             base.Initialize();
+        }
+
+        private int TopLevel()
+        {
+            int topLevel = 0;
+
+            using (IsolatedStorageFile gameStorage = IsolatedStorageFile.GetUserStoreForApplication())
+            {
+                if (gameStorage.FileExists("completedLevels"))
+                {
+                    using (IsolatedStorageFileStream fs = gameStorage.OpenFile("completedLevels", System.IO.FileMode.Open))
+                    {
+                        if (fs != null)
+                        {
+                            byte[] bytes = new byte[10];
+                            int x = fs.Read(bytes, 0, 10);
+                            if (x > 0)
+                                topLevel = System.BitConverter.ToInt32(bytes, 0);
+                        }
+                    }
+                }
+            }
+
+            return topLevel;
         }
 
         /// <summary>

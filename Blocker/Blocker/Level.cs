@@ -24,6 +24,7 @@ namespace Blocker
 
         // Meta information for level
         private int levelNumber;
+        public int LevelNumber { get { return levelNumber; } private set { levelNumber = value; } }
         private bool complete;
         public bool Complete { get { return complete; } private set { complete = value; } }
         private bool quit;
@@ -326,7 +327,7 @@ namespace Blocker
 
         private void ProcessPush(Vector2 position)
         {
-            Vector2 delta = new Vector2(player.GetPosition().X - position.X, position.Y - player.GetPosition().Y);
+            Vector2 delta = new Vector2(position.X - player.GetPosition().X, position.Y - player.GetPosition().Y);
 
             Direction direction = GetDirection(delta);
             Vector2 origin = AcquireTarget(delta, direction);
