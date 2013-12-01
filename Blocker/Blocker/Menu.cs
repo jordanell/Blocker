@@ -47,6 +47,8 @@ namespace Blocker
         public bool LoadLevel { get; private set; }
         public int LevelNumber { get; private set; }
 
+        private Timer timer;
+
         public Menu(Game game, SpriteBatch spriteBatch)
             : base(game)
         {
@@ -137,6 +139,12 @@ namespace Blocker
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Update(GameTime gameTime)
         {
+            if (timer == null)
+                timer = new Timer(game, 1000);
+            timer.Update(gameTime);
+            if (!timer.IsDone())
+                return; 
+
             switch (state)
             {
                 case MenuState.Main:

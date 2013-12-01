@@ -21,13 +21,15 @@ namespace Blocker
         private Game game;
         private SpriteBatch spriteBatch;
 
+        private SplashScreen splash;
+
         private Background background;
 
         private Menu menu;
         private Level level;
 
-        private enum ManagerState { Menu, Level }
-        private ManagerState state = ManagerState.Menu;
+        private enum ManagerState { Splash, Menu, Level }
+        private ManagerState state = ManagerState.Splash;
 
         public Manager(Game game, SpriteBatch spriteBatch)
             : base(game)
@@ -45,6 +47,10 @@ namespace Blocker
         public override void Initialize()
         {
             // Check for needed files
+            CheckFiles();
+
+            // Create the splash screen
+            splash = new SplashScreen(game, spriteBatch, 3000);
 
             // Create the background entity
             background = new Background(game, spriteBatch);
@@ -86,10 +92,23 @@ namespace Blocker
         public override void Update(GameTime gameTime)
         {
             // Update the background
-            background.Update(gameTime);
+            if (state != ManagerState.Splash)
+                background.Update(gameTime);
 
             // Update based on state
-            if (state == ManagerState.Menu)
+            if (state == ManagerState.Splash)
+            {
+                splash.Update(gameTime);
+
+                if (splash.Complete)
+                {
+                    menu = new Menu(game, spriteBatch);
+                    splash = null;
+                    state = ManagerState.Menu;
+                    return;
+                }
+            }
+            else if (state == ManagerState.Menu)
             {
                 menu.Update(gameTime);
 
@@ -155,14 +174,14 @@ namespace Blocker
         public override void Draw(GameTime gameTime)
         {
             // Draw the background
-            background.Draw(gameTime);
+            if (state != ManagerState.Splash)
+                background.Draw(gameTime);
 
             // Draw based on state
-            if (state == ManagerState.Menu)
-            {
+            if (state == ManagerState.Splash)
+                splash.Draw(gameTime);
+            else if (state == ManagerState.Menu)
                 menu.Draw(gameTime);
-            }
-
             else if (state == ManagerState.Level)
                 level.Draw(gameTime);
             
