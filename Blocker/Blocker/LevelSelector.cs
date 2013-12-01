@@ -22,6 +22,9 @@ namespace Blocker
 
         private List<List<Button>> selector;
 
+        public bool LoadLevel { get; private set; }
+        public int LevelNumber { get; private set; }
+
         public LevelSelector(Game game, SpriteBatch spriteBatch)
             : base(game)
         {
@@ -48,7 +51,6 @@ namespace Blocker
                     Button button = new Button(game, spriteBatch, 
                                                new Rectangle((30+(x*90)), (300+(y*90)), 60, 60), blueButton, menuFont,
                                                Convert.ToString((y * 5) + x + 1));
-                    button.Initialize();
                     row.Add(button);
                 }
                 selector.Add(row);
@@ -63,7 +65,18 @@ namespace Blocker
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Update(GameTime gameTime)
         {
-            // TODO: Add your update code here
+            for (int y = 0; y <= 4; y++)
+            {
+                for (int x = 0; x < 5; x++)
+                {
+                    (selector[y])[x].Update(gameTime);
+                    if ((selector[y])[x].state == TouchButtonState.Clicked)
+                    {
+                        LoadLevel = true;
+                        LevelNumber = ((y * 5) + x + 1);
+                    }
+                }
+            }
 
             base.Update(gameTime);
         }

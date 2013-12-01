@@ -29,7 +29,13 @@ namespace Blocker
         private Rectangle destination;
         private Texture2D texture;
         private SpriteFont font;
+
         private String text;
+        public String Text
+        {
+            get { return text; }
+            set { text = value; }
+        }
 
         private Color color = Color.White;
         private Vector2 textLocation;
@@ -48,6 +54,8 @@ namespace Blocker
             this.texture = texture;
             this.font = font;
             this.text = text;
+
+            Initialize();
         }
 
         /// <summary>
@@ -56,17 +64,12 @@ namespace Blocker
         /// </summary>
         public override void Initialize()
         {
-            setTextLocation();
+            SetTextLocation();
 
             base.Initialize();
         }
 
-        public void setText(String text)
-        {
-            this.text = text;
-        }
-
-        private void setTextLocation()
+        private void SetTextLocation()
         {
             Vector2 size = font.MeasureString(text);
             textLocation = new Vector2();

@@ -21,8 +21,16 @@ namespace Blocker
         private SpriteBatch spriteBatch;
 
         private SpriteFont font;
-
         private String text;
+        public String Text
+        {
+            get { return text; }
+            set 
+            { 
+                text = value;
+                SetTextLocation(); 
+            }
+        }
 
         private Rectangle destination;
         Vector2 textLocation;
@@ -33,8 +41,10 @@ namespace Blocker
             this.game = game;
             this.spriteBatch = spriteBatch;
             this.font = font;
-            this.text = text;
+            this.Text = text;
             this.destination = destination;
+
+            Initialize();
         }
 
         /// <summary>
@@ -43,20 +53,14 @@ namespace Blocker
         /// </summary>
         public override void Initialize()
         {
-            setTextLocation();
+            SetTextLocation();
 
             base.Initialize();
         }
 
-        public void setText(String text)
+        private void SetTextLocation()
         {
-            this.text = text;
-            setTextLocation();
-        }
-
-        private void setTextLocation()
-        {
-            Vector2 size = font.MeasureString(text);
+            Vector2 size = font.MeasureString(Text);
             textLocation = new Vector2();
             textLocation.X = destination.X + ((destination.Width / 2) - (size.X / 2));
             textLocation.Y = destination.Y + ((destination.Height / 2) - (size.Y / 2));
@@ -76,7 +80,7 @@ namespace Blocker
         public override void Draw(GameTime gameTime)
         {
             spriteBatch.Begin();
-            spriteBatch.DrawString(font, text, textLocation, Color.White);
+            spriteBatch.DrawString(font, Text, textLocation, Color.White);
             spriteBatch.End();
 
             base.Draw(gameTime);

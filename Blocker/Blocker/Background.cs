@@ -31,10 +31,12 @@ namespace Blocker
         {
             this.game =  game;
             this.spriteBatch = sb;
+
+            Initialize();
         }
 
         /// <summary>
-        /// Allows the game component to perform any initialization it needs to before starting
+        /// Allows the Background to perform initialization it needs to before starting
         /// to run.  This is where it can query for any required services and load content.
         /// </summary>
         public override void Initialize()

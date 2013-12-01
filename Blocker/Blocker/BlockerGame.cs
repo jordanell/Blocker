@@ -17,8 +17,8 @@ namespace Blocker
     /// </summary>
     public class BlockerGame : Microsoft.Xna.Framework.Game
     {
-        GraphicsDeviceManager graphics;
-        SpriteBatch spriteBatch;
+        private GraphicsDeviceManager graphics;
+        private SpriteBatch spriteBatch;
 
         private Manager manager;
 
@@ -63,8 +63,8 @@ namespace Blocker
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
+            // Create the game manager
             manager = new Manager(this, spriteBatch);
-            manager.Initialize();
         }
 
         /// <summary>

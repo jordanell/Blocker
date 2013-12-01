@@ -23,33 +23,31 @@ namespace Blocker
         private Background background;
 
         private Menu menu;
+        private Level level;
 
-        private Level activeLevel;
+        private enum ManagerState { Menu, Level }
+        private ManagerState state = ManagerState.Menu;
 
         public Manager(Game game, SpriteBatch spriteBatch)
             : base(game)
         {
             this.game = game;
             this.spriteBatch = spriteBatch;
+
+            Initialize();
         }
 
         /// <summary>
-        /// Allows the game component to perform any initialization it needs to before starting
+        /// Allows the Manager component to perform initialization it needs to before starting
         /// to run.  This is where it can query for any required services and load content.
         /// </summary>
         public override void Initialize()
         {
             // Create the background entity
             background = new Background(game, spriteBatch);
-            background.Initialize();
 
             // Create the menu entity
             menu = new Menu(game, spriteBatch);
-            menu.Initialize();
-
-            // Create the level
-            activeLevel = new Level(game, spriteBatch, 1);
-            activeLevel.Initialize();
 
             base.Initialize();
         }
@@ -63,8 +61,22 @@ namespace Blocker
             // Update the background
             background.Update(gameTime);
 
-            if (activeLevel != null)
-                activeLevel.Update(gameTime);
+            // Update based on state
+            if (state == ManagerState.Menu)
+            {
+                menu.Update(gameTime);
+
+                if (menu.LoadLevel)
+                {
+                    level = new Level(game, spriteBatch, menu.LevelNumber);
+                    menu = null;
+                    state = ManagerState.Level;
+                    return;
+                }
+            }
+
+            else if (state == ManagerState.Level)
+                level.Update(gameTime);
 
             base.Update(gameTime);
         }
@@ -78,8 +90,14 @@ namespace Blocker
             // Draw the background
             background.Draw(gameTime);
 
-            if (activeLevel != null)
-                activeLevel.Draw(gameTime);
+            // Draw based on state
+            if (state == ManagerState.Menu)
+            {
+                menu.Draw(gameTime);
+            }
+
+            else if (state == ManagerState.Level)
+                level.Draw(gameTime);
             
             base.Draw(gameTime);
         }

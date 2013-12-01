@@ -47,6 +47,8 @@ namespace Blocker
             this.game = game;
             this.spriteBatch = spriteBatch;
             this.levelNumber = levelNumber;
+
+            Initialize();
         }
 
         /// <summary>

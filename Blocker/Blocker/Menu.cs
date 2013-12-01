@@ -24,6 +24,7 @@ namespace Blocker
         private enum MenuState { Main, LevelSelect, Settings };
         private MenuState state = MenuState.Main;
 
+        // Title logo
         private Texture2D title;
 
         // Buttons
@@ -41,11 +42,17 @@ namespace Blocker
         private Button soundNo;
         private Button reset;
 
+        // Level loading
+        public bool LoadLevel { get; private set; }
+        public int LevelNumber { get; private set; }
+
         public Menu(Game game, SpriteBatch spriteBatch)
             : base(game)
         {
             this.game = game;
             this.spriteBatch = spriteBatch;
+
+            Initialize();
         }
 
         /// <summary>
@@ -67,20 +74,16 @@ namespace Blocker
             Texture2D blueButton = game.Content.Load<Texture2D>("Buttons\\BlueButton");
             Texture2D redButton = game.Content.Load<Texture2D>("Buttons\\RedButton");
 
-            SpriteFont menuFont = game.Content.Load<SpriteFont>("Fonts\\Pericles36");
-            SpriteFont menuFont2 = game.Content.Load<SpriteFont>("Fonts\\Pericles28");
+            SpriteFont menuFontBig = game.Content.Load<SpriteFont>("Fonts\\Pericles36");
+            SpriteFont menuFontSmall = game.Content.Load<SpriteFont>("Fonts\\Pericles28");
 
-            playButton = new Button(game, spriteBatch, new Rectangle(103, 375, 275, 70), blueButton, menuFont, "Play");
-            playButton.Initialize();
+            playButton = new Button(game, spriteBatch, new Rectangle(103, 375, 275, 70), blueButton, menuFontBig, "Play");
 
-            levelSelectButton = new Button(game, spriteBatch, new Rectangle(103, 475, 275, 70), blueButton, menuFont2, "Level Select");
-            levelSelectButton.Initialize();
+            levelSelectButton = new Button(game, spriteBatch, new Rectangle(103, 475, 275, 70), blueButton, menuFontSmall, "Level Select");
 
-            settingsButton = new Button(game, spriteBatch, new Rectangle(103, 575, 275, 70), yellowButton, menuFont, "Settings");
-            settingsButton.Initialize();
+            settingsButton = new Button(game, spriteBatch, new Rectangle(103, 575, 275, 70), yellowButton, menuFontBig, "Settings");
 
-            exitButton = new Button(game, spriteBatch, new Rectangle(103, 675, 275, 70), redButton, menuFont, "Exit");
-            exitButton.Initialize();
+            exitButton = new Button(game, spriteBatch, new Rectangle(103, 675, 275, 70), redButton, menuFontBig, "Exit");
         }
 
         private void UnloadMainMenu()
@@ -108,20 +111,16 @@ namespace Blocker
             Texture2D blueButton = game.Content.Load<Texture2D>("Buttons\\BlueButton");
             Texture2D redButton = game.Content.Load<Texture2D>("Buttons\\RedButton");
 
-            SpriteFont menuFont = game.Content.Load<SpriteFont>("Fonts\\Pericles36");
-            SpriteFont menuFont2 = game.Content.Load<SpriteFont>("Fonts\\Pericles28");
+            SpriteFont menuFontBig = game.Content.Load<SpriteFont>("Fonts\\Pericles36");
+            SpriteFont menuFontSmall = game.Content.Load<SpriteFont>("Fonts\\Pericles28");
 
-            sound = new Label(game, spriteBatch, new Rectangle(103, 375, 275, 70), menuFont2, "Play with sound?");
-            sound.Initialize();
+            sound = new Label(game, spriteBatch, new Rectangle(103, 375, 275, 70), menuFontSmall, "Play with sound?");
 
-            soundYes = new Button(game, spriteBatch, new Rectangle(103, 475, 122, 70), yellowButton, menuFont, "Yes");
-            soundYes.Initialize();
+            soundYes = new Button(game, spriteBatch, new Rectangle(103, 475, 122, 70), yellowButton, menuFontBig, "Yes");
 
-            soundNo = new Button(game, spriteBatch, new Rectangle(255, 475, 122, 70), blueButton, menuFont, "No");
-            soundNo.Initialize();
+            soundNo = new Button(game, spriteBatch, new Rectangle(255, 475, 122, 70), blueButton, menuFontBig, "No");
 
-            reset = new Button(game, spriteBatch, new Rectangle(103, 675, 275, 70), redButton, menuFont2, "Reset Levels");
-            reset.Initialize();
+            reset = new Button(game, spriteBatch, new Rectangle(103, 675, 275, 70), redButton, menuFontSmall, "Reset Levels");
         }
 
         private void UnloadSettings()
@@ -140,68 +139,90 @@ namespace Blocker
             switch (state)
             {
                 case MenuState.Main:
-                    playButton.Update(gameTime);
-                    levelSelectButton.Update(gameTime);
-                    settingsButton.Update(gameTime);
-                    exitButton.Update(gameTime);
-
-                    // Allows the game to exit
-                    if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
-                        game.Exit();
-
-                    if (playButton.state == TouchButtonState.Clicked)
-                    {
-                        UnloadMainMenu();
-                        LoadMainMenu();
-                    }
-
-                    else if (levelSelectButton.state == TouchButtonState.Clicked)
-                    {
-                        state = MenuState.LevelSelect;
-                        UnloadMainMenu();
-                        LoadLevelSelect();
-                    }
-
-                    else if (settingsButton.state == TouchButtonState.Clicked)
-                    {
-                        state = MenuState.Settings;
-                        UnloadMainMenu();
-                        LoadSettings();
-                    }
-
-                    else if (exitButton.state == TouchButtonState.Clicked)
-                        game.Exit();
+                    UpdateMainMenu(gameTime);
                     break;
 
                 case MenuState.LevelSelect:
-                    selector.Update(gameTime);
-
-                    // Monitor the back button
-                    if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
-                    {
-                        state = MenuState.Main;
-                        UnloadLevelSelect();
-                        LoadMainMenu();
-                    }
+                    UpdateLevelSelection(gameTime);
                     break;
 
                 case MenuState.Settings:
-                    soundYes.Update(gameTime);
-                    soundNo.Update(gameTime);
-                    reset.Update(gameTime);
-
-                    // Monitor the back button
-                    if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
-                    {
-                        state = MenuState.Main;
-                        UnloadSettings();
-                        LoadMainMenu();
-                    }
-
+                    UpdateSettings(gameTime);
                     break;
             }
 
             base.Update(gameTime);
+        }
+
+        private void UpdateMainMenu(GameTime gameTime)
+        {
+            playButton.Update(gameTime);
+            levelSelectButton.Update(gameTime);
+            settingsButton.Update(gameTime);
+            exitButton.Update(gameTime);
+
+            // Allows the game to exit
+            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
+                game.Exit();
+
+            if (playButton.state == TouchButtonState.Clicked)
+            {
+                UnloadMainMenu();
+                // Fix this once saves are implemented
+                LoadLevel = true;
+                LevelNumber = 1;
+            }
+
+            else if (levelSelectButton.state == TouchButtonState.Clicked)
+            {
+                state = MenuState.LevelSelect;
+                UnloadMainMenu();
+                LoadLevelSelect();
+            }
+
+            else if (settingsButton.state == TouchButtonState.Clicked)
+            {
+                state = MenuState.Settings;
+                UnloadMainMenu();
+                LoadSettings();
+            }
+
+            else if (exitButton.state == TouchButtonState.Clicked)
+                game.Exit();
+        }
+
+        private void UpdateLevelSelection(GameTime gameTime)
+        {
+            selector.Update(gameTime);
+
+            if (selector.LoadLevel)
+            {
+                LoadLevel = true;
+                LevelNumber = selector.LevelNumber;
+            }
+
+            // Monitor the back button
+            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
+            {
+                state = MenuState.Main;
+                UnloadLevelSelect();
+                LoadMainMenu();
+            }
+        }
+
+        private void UpdateSettings(GameTime gameTime)
+        {
+            soundYes.Update(gameTime);
+            soundNo.Update(gameTime);
+            reset.Update(gameTime);
+
+            // Monitor the back button
+            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
+            {
+                state = MenuState.Main;
+                UnloadSettings();
+                LoadMainMenu();
+            }
         }
 
         /// <summary>
@@ -215,6 +236,7 @@ namespace Blocker
             spriteBatch.Draw(title, new Vector2(88, 190), Color.White);
             spriteBatch.End();
 
+            // Draw based on state
             switch (state)
             {
                 case MenuState.Main:

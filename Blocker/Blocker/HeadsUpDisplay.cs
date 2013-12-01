@@ -68,40 +68,37 @@ namespace Blocker
             exitButton.Initialize();
 
             fuel = new Label(game, spriteBatch, new Rectangle(10, 10, 115, 25), hudFont3, "Fuel: " + Convert.ToString(fuelLeft));
-            fuel.Initialize();
 
             red = new Label(game, spriteBatch, new Rectangle(45, 45, 40, 25), hudFont3, "0");
-            red.Initialize();
 
             blue = new Label(game, spriteBatch, new Rectangle(125, 45, 40, 25), hudFont3, "0");
-            blue.Initialize();
 
             base.Initialize();
         }
 
-        public void resetHud(int fuel)
+        public void ResetHud(int fuel)
         {
             this.fuelLeft = fuel;
-            red.setText("0");
-            blue.setText("0");
+            red.Text = "0";
+            blue.Text = "0";
         }
 
         public void DecreaseFuel()
         {
             this.fuelLeft--;
-            this.fuel.setText("Fuel: " + "Fuel: " + Convert.ToString(fuelLeft));
+            this.fuel.Text = "Fuel: " + "Fuel: " + Convert.ToString(fuelLeft);
         }
 
         public void AddRedMatter()
         {
             redCount++;
-            red.setText(Convert.ToString(redCount));
+            red.Text = Convert.ToString(redCount);
         }
 
         public void AddBlueMatter()
         {
             blueCount++;
-            blue.setText(Convert.ToString(blueCount));
+            blue.Text = Convert.ToString(blueCount);
         }
 
         public int GetRedMatter()
@@ -117,13 +114,13 @@ namespace Blocker
         public void DecreaseRedMatter()
         {
             redCount--;
-            red.setText(Convert.ToString(redCount));
+            red.Text = Convert.ToString(redCount);
         }
 
         public void DecreaseBlueMatter()
         {
             blueCount--;
-            blue.setText(Convert.ToString(blueCount));
+            blue.Text = Convert.ToString(blueCount);
         }
 
         /// <summary>
