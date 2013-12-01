@@ -80,11 +80,12 @@
     <Compile Include="Movement.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SoundMixer.cs" />
     <Compile Include="Timer.cs" />
-    <None Include="Levels\level2.level">
+    <None Include="Levels\level2.lvl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Levels\level1.level">
+    <None Include="Levels\level1.lvl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Properties\AppManifest.xml">

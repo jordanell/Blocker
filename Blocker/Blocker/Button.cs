@@ -101,7 +101,10 @@ namespace Blocker
             foreach (TouchLocation touch in touchCollection)
             {
                 if (isButtonTouched(touch))
+                {
                     state = TouchButtonState.Clicked;
+                    SoundMixer.Instance(game).PlayEffect("Audio\\button");
+                }
             }
 
             base.Update(gameTime);

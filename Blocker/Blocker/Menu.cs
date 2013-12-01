@@ -243,6 +243,12 @@ namespace Blocker
             if (reset.state == TouchButtonState.Clicked)
                 ResetLevels();
 
+            if (soundYes.state == TouchButtonState.Clicked)
+                SoundMixer.Instance(game).Muted = false;
+
+            if (soundNo.state == TouchButtonState.Clicked)
+                SoundMixer.Instance(game).Muted = true;
+
             // Monitor the back button
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
             {

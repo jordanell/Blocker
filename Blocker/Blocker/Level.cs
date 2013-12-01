@@ -75,7 +75,7 @@ namespace Blocker
 
         private void LoadLevel()
         {
-            String levelFile = "Levels\\level" + Convert.ToString(levelNumber) + ".level";
+            String levelFile = "Levels\\level" + Convert.ToString(levelNumber) + ".lvl";
 
             List<string> textureNames = new List<string>();
             List<List<int>> tempLayout = new List<List<int>>();
