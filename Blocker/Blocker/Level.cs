@@ -41,6 +41,8 @@ namespace Blocker
         private enum LevelState { Idle, Moving };
         private LevelState state = LevelState.Idle;
 
+        private Timer timer;
+
         public Level(Game game, SpriteBatch spriteBatch, int levelNumber)
             : base(game)
         {
@@ -57,10 +59,9 @@ namespace Blocker
         /// </summary>
         public override void Initialize()
         {
-            LoadLevel();
-
             HUD = new HeadsUpDisplay(game, spriteBatch);
-            HUD.Initialize();
+
+            LoadLevel();
 
             base.Initialize();
         }
@@ -172,6 +173,12 @@ namespace Blocker
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Update(GameTime gameTime)
         {
+            if (timer == null)
+                timer = new Timer(game, 1000);
+            timer.Update(gameTime);
+            if (!timer.IsDone())
+                return; 
+
             state = LevelState.Idle;
             if (player.Getstate() == PlayerState.Moving)
                 state = LevelState.Moving;
@@ -315,7 +322,7 @@ namespace Blocker
                 if (color == Color.Red)
                 {
                     Movement move = GetBlockMovement(origin, direction);
-                    if (move != null && HUD.GetRedMatter() > 0)
+                    if (move != null && HUD.RedMatter > 0)
                     {
                         ((MoveableBlock)target).Move(move);
                         HUD.DecreaseRedMatter();
@@ -327,7 +334,7 @@ namespace Blocker
                 else if (color == Color.Blue)
                 {
                     Movement move = GetBlockMovement(origin, direction);
-                    if (move != null && HUD.GetBlueMatter() > 0)
+                    if (move != null && HUD.BlueMatter > 0)
                     {
                         ((MoveableBlock)target).Move(move);
                         HUD.DecreaseBlueMatter();

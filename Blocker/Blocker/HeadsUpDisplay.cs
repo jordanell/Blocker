@@ -21,21 +21,46 @@ namespace Blocker
         private SpriteBatch spriteBatch;
 
         // Fuel
-        private Label fuel;
-        private int fuelLeft;
+        private Label fuelLabel;
+        private int fuel;
+        public int Fuel 
+        {
+            get { return fuel; }
+            private set 
+            { 
+                fuel = value;
+                fuelLabel.Text = "Fuel: " + Convert.ToString(value);
+            } 
+        }
 
         // Matter
-        private Texture2D redMatter;
-        private Texture2D blueMatter;
-        private Label red;
-        private int redCount = 0;
-        private Label blue;
-        private int blueCount = 0;
+        private Texture2D redMatterTexture;
+        private Texture2D blueMatterTexture;
+        private Label redMatterLabel;
+        private int redMatter = 0;
+        public int RedMatter 
+        {
+            get { return redMatter; }
+            private set 
+            { 
+                redMatter = value;
+                redMatterLabel.Text = Convert.ToString(value);
+            }
+        }
+        private Label blueMatterLabel;
+        private int blueMatter = 0;
+        public int BlueMatter 
+        {
+            get { return blueMatter; }
+            private set 
+            { 
+                blueMatter = value;
+                blueMatterLabel.Text = Convert.ToString(value);
+            }
+        }
 
-        // Reset
+        // Buttons
         public Button resetButton;
-
-        // Exit
         public Button exitButton;
 
         public HeadsUpDisplay(Game game, SpriteBatch spriteBatch)
@@ -43,6 +68,8 @@ namespace Blocker
         {
             this.game = game;
             this.spriteBatch = spriteBatch;
+
+            Initialize();
         }
 
         /// <summary>
@@ -54,8 +81,8 @@ namespace Blocker
             Texture2D greenButton = game.Content.Load<Texture2D>("Buttons\\GreenButton");
             Texture2D redButton = game.Content.Load<Texture2D>("Buttons\\RedButton");
 
-            redMatter = game.Content.Load<Texture2D>("Tiles\\Matter\\RedMatter\\RedMatter1");
-            blueMatter = game.Content.Load<Texture2D>("Tiles\\Matter\\BlueMatter\\BlueMatter1");
+            redMatterTexture = game.Content.Load<Texture2D>("Tiles\\Matter\\RedMatter\\RedMatter1");
+            blueMatterTexture = game.Content.Load<Texture2D>("Tiles\\Matter\\BlueMatter\\BlueMatter1");
 
             SpriteFont hudFont = game.Content.Load<SpriteFont>("Fonts\\Pericles28");
             SpriteFont hudFont2 = game.Content.Load<SpriteFont>("Fonts\\Pericles24");
@@ -67,60 +94,45 @@ namespace Blocker
             exitButton = new Button(game, spriteBatch, new Rectangle(365, 10, 105, 60), redButton, hudFont, "Exit");
             exitButton.Initialize();
 
-            fuel = new Label(game, spriteBatch, new Rectangle(10, 10, 115, 25), hudFont3, "Fuel: " + Convert.ToString(fuelLeft));
+            fuelLabel = new Label(game, spriteBatch, new Rectangle(10, 10, 115, 25), hudFont3, "Fuel: " + Convert.ToString(Fuel));
 
-            red = new Label(game, spriteBatch, new Rectangle(45, 45, 40, 25), hudFont3, "0");
+            redMatterLabel = new Label(game, spriteBatch, new Rectangle(45, 45, 40, 25), hudFont3, "0");
 
-            blue = new Label(game, spriteBatch, new Rectangle(125, 45, 40, 25), hudFont3, "0");
+            blueMatterLabel = new Label(game, spriteBatch, new Rectangle(125, 45, 40, 25), hudFont3, "0");
 
             base.Initialize();
         }
 
         public void ResetHud(int fuel)
         {
-            this.fuelLeft = fuel;
-            red.Text = "0";
-            blue.Text = "0";
+            this.Fuel = fuel;
+            RedMatter = 0;
+            BlueMatter = 0;
         }
 
         public void DecreaseFuel()
         {
-            this.fuelLeft--;
-            this.fuel.Text = "Fuel: " + "Fuel: " + Convert.ToString(fuelLeft);
+            Fuel--;
         }
 
         public void AddRedMatter()
         {
-            redCount++;
-            red.Text = Convert.ToString(redCount);
+            RedMatter++;
         }
 
         public void AddBlueMatter()
         {
-            blueCount++;
-            blue.Text = Convert.ToString(blueCount);
-        }
-
-        public int GetRedMatter()
-        {
-            return redCount;
-        }
-
-        public int GetBlueMatter()
-        {
-            return blueCount;
+            BlueMatter++;
         }
 
         public void DecreaseRedMatter()
         {
-            redCount--;
-            red.Text = Convert.ToString(redCount);
+            RedMatter--;
         }
 
         public void DecreaseBlueMatter()
         {
-            blueCount--;
-            blue.Text = Convert.ToString(blueCount);
+            BlueMatter--;
         }
 
         /// <summary>
@@ -139,15 +151,15 @@ namespace Blocker
         {
             resetButton.Draw(gameTime);
             exitButton.Draw(gameTime);
-            fuel.Draw(gameTime);
+            fuelLabel.Draw(gameTime);
 
             spriteBatch.Begin();
-            spriteBatch.Draw(redMatter, new Rectangle(10, 45, 30, 30), Color.White);
-            spriteBatch.Draw(blueMatter, new Rectangle(90, 45, 30, 30), Color.White);
+            spriteBatch.Draw(redMatterTexture, new Rectangle(10, 45, 30, 30), Color.White);
+            spriteBatch.Draw(blueMatterTexture, new Rectangle(90, 45, 30, 30), Color.White);
             spriteBatch.End();
 
-            red.Draw(gameTime);
-            blue.Draw(gameTime);
+            redMatterLabel.Draw(gameTime);
+            blueMatterLabel.Draw(gameTime);
             
             base.Draw(gameTime);
         }

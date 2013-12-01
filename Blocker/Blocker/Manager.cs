@@ -76,7 +76,17 @@ namespace Blocker
             }
 
             else if (state == ManagerState.Level)
+            {
                 level.Update(gameTime);
+
+                if (level.quit)
+                {
+                    menu = new Menu(game, spriteBatch);
+                    level = null;
+                    state = ManagerState.Menu;
+                    return;
+                }
+            }
 
             base.Update(gameTime);
         }
