@@ -41,6 +41,7 @@ namespace Blocker
         private Vector2 textLocation;
 
         public TouchButtonState state = TouchButtonState.Up;
+        private int touchID = -1;
 
         public bool enabled = true;
 
@@ -115,8 +116,16 @@ namespace Blocker
             spriteBatch.Begin();
             if (enabled)
             {
-                spriteBatch.Draw(texture, destination, Color.White);
-                spriteBatch.DrawString(font, text, textLocation, color);
+                if (state == TouchButtonState.Up)
+                {
+                    spriteBatch.Draw(texture, destination, Color.White);
+                    spriteBatch.DrawString(font, text, textLocation, color);
+                }
+                else
+                {
+                    spriteBatch.Draw(texture, destination, Color.Silver);
+                    spriteBatch.DrawString(font, text, textLocation,Color.Silver);
+                }
             }
             else
             {
