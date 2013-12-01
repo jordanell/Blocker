@@ -20,6 +20,19 @@ namespace Blocker
         private Game game;
         private SpriteBatch spriteBatch;
 
+        // Level
+        private Label levelLabel;
+        private int level;
+        public int Level
+        {
+            get { return level; }
+            set
+            {
+                level = value;
+                levelLabel.Text = "Level: " + Convert.ToString(value);
+            } 
+        }
+
         // Fuel
         private Label fuelLabel;
         private int fuel;
@@ -104,10 +117,13 @@ namespace Blocker
             exitButton.Initialize();
 
             fuelLabel = new Label(game, spriteBatch, new Rectangle(10, 10, 115, 25), hudFont3, "Fuel: " + Convert.ToString(Fuel));
+            fuelLabel.TextPosition = Label.LabelPosition.Left;
 
-            redMatterLabel = new Label(game, spriteBatch, new Rectangle(45, 45, 40, 25), hudFont3, "0");
+            levelLabel = new Label(game, spriteBatch, new Rectangle(125, 10, 115, 25), hudFont3, "Level: " + Convert.ToString(Level));
+            levelLabel.TextPosition = Label.LabelPosition.Left;
 
-            blueMatterLabel = new Label(game, spriteBatch, new Rectangle(125, 45, 40, 25), hudFont3, "0");
+            blueMatterLabel = new Label(game, spriteBatch, new Rectangle(25, 45, 40, 25), hudFont3, "0");
+            redMatterLabel = new Label(game, spriteBatch, new Rectangle(98, 45, 40, 25), hudFont3, "0");
 
             base.Initialize();
         }
@@ -153,6 +169,9 @@ namespace Blocker
             resetButton.Update(gameTime);
             exitButton.Update(gameTime);
 
+            if (Fuel == 0)
+                fuelLabel.TextColor = Color.Red;
+
             base.Update(gameTime);
         }
 
@@ -161,10 +180,11 @@ namespace Blocker
             resetButton.Draw(gameTime);
             exitButton.Draw(gameTime);
             fuelLabel.Draw(gameTime);
+            levelLabel.Draw(gameTime);
 
             spriteBatch.Begin();
-            spriteBatch.Draw(redMatterTexture, new Rectangle(10, 45, 30, 30), Color.White);
-            spriteBatch.Draw(blueMatterTexture, new Rectangle(90, 45, 30, 30), Color.White);
+            spriteBatch.Draw(blueMatterTexture, new Rectangle(2, 36, 40, 40), Color.White);
+            spriteBatch.Draw(redMatterTexture, new Rectangle(75, 36, 40, 40), Color.White);
             spriteBatch.End();
 
             redMatterLabel.Draw(gameTime);

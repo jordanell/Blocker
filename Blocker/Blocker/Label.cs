@@ -32,8 +32,27 @@ namespace Blocker
             }
         }
 
+        private Color textColor = Color.White;
+        public Color TextColor
+        {
+            get { return textColor; }
+            set { textColor = value; }
+        }
+
         private Rectangle destination;
         Vector2 textLocation;
+
+        public enum LabelPosition { Left, Center }
+        private LabelPosition textPosition = LabelPosition.Center;
+        public LabelPosition TextPosition
+        {
+            get { return textPosition; }
+            set 
+            { 
+                textPosition = value;
+                SetTextLocation(); 
+            }
+        }
 
         public Label(Game game, SpriteBatch spriteBatch, Rectangle destination, SpriteFont font, String text)
             : base(game)
@@ -60,10 +79,21 @@ namespace Blocker
 
         private void SetTextLocation()
         {
-            Vector2 size = font.MeasureString(Text);
-            textLocation = new Vector2();
-            textLocation.X = destination.X + ((destination.Width / 2) - (size.X / 2));
-            textLocation.Y = destination.Y + ((destination.Height / 2) - (size.Y / 2));
+            if (textPosition == LabelPosition.Center)
+            {
+                Vector2 size = font.MeasureString(Text);
+                textLocation = new Vector2();
+                textLocation.X = destination.X + ((destination.Width / 2) - (size.X / 2));
+                textLocation.Y = destination.Y + ((destination.Height / 2) - (size.Y / 2));
+            }
+            else
+            {
+                Vector2 size = font.MeasureString(Text);
+                textLocation = new Vector2();
+                textLocation.X = destination.X;
+                textLocation.Y = destination.Y + ((destination.Height / 2) - (size.Y / 2));
+
+            }
         }
 
         /// <summary>
@@ -80,7 +110,7 @@ namespace Blocker
         public override void Draw(GameTime gameTime)
         {
             spriteBatch.Begin();
-            spriteBatch.DrawString(font, Text, textLocation, Color.White);
+            spriteBatch.DrawString(font, Text, textLocation, TextColor);
             spriteBatch.End();
 
             base.Draw(gameTime);

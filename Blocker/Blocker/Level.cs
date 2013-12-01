@@ -66,8 +66,9 @@ namespace Blocker
         public override void Initialize()
         {
             HUD = new HeadsUpDisplay(game, spriteBatch);
-            map = new Block[18, 12];
+            HUD.Level = levelNumber;
 
+            map = new Block[18, 12];
             LoadLevel();
 
             base.Initialize();
