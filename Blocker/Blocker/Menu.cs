@@ -22,7 +22,7 @@ namespace Blocker
         private Game game;
         private SpriteBatch spriteBatch;
 
-        private enum MenuState { Main, LevelSelect, Settings };
+        private enum MenuState { Main, LevelSelect, Instructions, Settings };
         private MenuState state = MenuState.Main;
 
         // Title logo
@@ -31,11 +31,15 @@ namespace Blocker
         // Buttons
         private Button playButton;
         private Button levelSelectButton;
+        private Button instructionsButton;
         private Button settingsButton;
         private Button exitButton;
 
         // Level selector
         private LevelSelector selector;
+
+        // Instructions
+        private Texture2D instructions;
 
         // Settings
         private Label sound;
@@ -80,12 +84,10 @@ namespace Blocker
             SpriteFont menuFontBig = game.Content.Load<SpriteFont>("Fonts\\Pericles36");
             SpriteFont menuFontSmall = game.Content.Load<SpriteFont>("Fonts\\Pericles28");
 
-            playButton = new Button(game, spriteBatch, new Rectangle(103, 375, 275, 70), blueButton, menuFontBig, "Play");
-
-            levelSelectButton = new Button(game, spriteBatch, new Rectangle(103, 475, 275, 70), blueButton, menuFontSmall, "Level Select");
-
+            playButton = new Button(game, spriteBatch, new Rectangle(103, 275, 275, 70), blueButton, menuFontBig, "Play");
+            levelSelectButton = new Button(game, spriteBatch, new Rectangle(103, 375, 275, 70), blueButton, menuFontSmall, "Level Select");
+            instructionsButton = new Button(game, spriteBatch, new Rectangle(103, 475, 275, 70), yellowButton, menuFontSmall, "Instructions");
             settingsButton = new Button(game, spriteBatch, new Rectangle(103, 575, 275, 70), yellowButton, menuFontBig, "Settings");
-
             exitButton = new Button(game, spriteBatch, new Rectangle(103, 675, 275, 70), redButton, menuFontBig, "Exit");
         }
 
@@ -106,6 +108,16 @@ namespace Blocker
         private void UnloadLevelSelect()
         {
             selector = null;
+        }
+
+        private void LoadInstructions()
+        {
+            instructions = game.Content.Load<Texture2D>("Splash");
+        }
+
+        private void UnloadInstructions()
+        {
+            instructions = null;
         }
 
         private void LoadSettings()
@@ -155,6 +167,10 @@ namespace Blocker
                     UpdateLevelSelection(gameTime);
                     break;
 
+                case MenuState.Instructions:
+                    UpdateInstructions();
+                    break;
+
                 case MenuState.Settings:
                     UpdateSettings(gameTime);
                     break;
@@ -167,6 +183,7 @@ namespace Blocker
         {
             playButton.Update(gameTime);
             levelSelectButton.Update(gameTime);
+            instructionsButton.Update(gameTime);
             settingsButton.Update(gameTime);
             exitButton.Update(gameTime);
 
@@ -186,6 +203,13 @@ namespace Blocker
                 state = MenuState.LevelSelect;
                 UnloadMainMenu();
                 LoadLevelSelect();
+            }
+
+            else if (instructionsButton.state == TouchButtonState.Clicked)
+            {
+                state = MenuState.Instructions;
+                UnloadMainMenu();
+                LoadInstructions();
             }
 
             else if (settingsButton.state == TouchButtonState.Clicked)
@@ -242,6 +266,17 @@ namespace Blocker
             }
         }
 
+        private void UpdateInstructions()
+        {
+            // Monitor the back button
+            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
+            {
+                state = MenuState.Main;
+                UnloadLevelSelect();
+                LoadMainMenu();
+            }
+        }
+
         private void UpdateSettings(GameTime gameTime)
         {
             soundYes.Update(gameTime);
@@ -289,7 +324,7 @@ namespace Blocker
         {
             // Draw the static title
             spriteBatch.Begin();
-            spriteBatch.Draw(title, new Vector2(88, 190), Color.White);
+            spriteBatch.Draw(title, new Vector2(0, 90), Color.White);
             spriteBatch.End();
 
             // Draw based on state
@@ -298,12 +333,19 @@ namespace Blocker
                 case MenuState.Main:
                     playButton.Draw(gameTime);
                     levelSelectButton.Draw(gameTime);
+                    instructionsButton.Draw(gameTime);
                     settingsButton.Draw(gameTime);
                     exitButton.Draw(gameTime);
                     break;
                 
                 case MenuState.LevelSelect:
                     selector.Draw(gameTime);
+                    break;
+
+                case MenuState.Instructions:
+                    spriteBatch.Begin();
+                    spriteBatch.Draw(instructions, Vector2.Zero, Color.White);
+                    spriteBatch.End();
                     break;
 
                 case MenuState.Settings:
