@@ -17,11 +17,16 @@ namespace Blocker
     /// </summary>
     public class Exit : Block
     {
+        private Game game;
+        private SpriteBatch spriteBatch;
+
+        private Animation animation;
 
         public Exit(Game game, SpriteBatch spriteBatch, Texture2D texture, Rectangle position)
             : base(game, spriteBatch, texture, position)
         {
-
+            this.game = game;
+            this.spriteBatch = spriteBatch;
         }
 
         /// <summary>
@@ -30,7 +35,28 @@ namespace Blocker
         /// </summary>
         public override void Initialize()
         {
-            blockTexture = game.Content.Load<Texture2D>("Tiles\\Exit");
+            List<Texture2D> slides = new List<Texture2D>();
+            slides.Add(game.Content.Load<Texture2D>("Tiles\\Shuttle\\Shuttle1"));
+            slides.Add(game.Content.Load<Texture2D>("Tiles\\Shuttle\\Shuttle2"));
+            slides.Add(game.Content.Load<Texture2D>("Tiles\\Shuttle\\Shuttle3"));
+            slides.Add(game.Content.Load<Texture2D>("Tiles\\Shuttle\\Shuttle4"));
+            slides.Add(game.Content.Load<Texture2D>("Tiles\\Shuttle\\Shuttle5"));
+            slides.Add(game.Content.Load<Texture2D>("Tiles\\Shuttle\\Shuttle6"));
+            slides.Add(game.Content.Load<Texture2D>("Tiles\\Shuttle\\Shuttle7"));
+            slides.Add(game.Content.Load<Texture2D>("Tiles\\Shuttle\\Shuttle8"));
+            slides.Add(game.Content.Load<Texture2D>("Tiles\\Shuttle\\Shuttle9"));
+            slides.Add(game.Content.Load<Texture2D>("Tiles\\Shuttle\\Shuttle8"));
+            slides.Add(game.Content.Load<Texture2D>("Tiles\\Shuttle\\Shuttle7"));
+            slides.Add(game.Content.Load<Texture2D>("Tiles\\Shuttle\\Shuttle6"));
+            slides.Add(game.Content.Load<Texture2D>("Tiles\\Shuttle\\Shuttle5"));
+            slides.Add(game.Content.Load<Texture2D>("Tiles\\Shuttle\\Shuttle4"));
+            slides.Add(game.Content.Load<Texture2D>("Tiles\\Shuttle\\Shuttle3"));
+            slides.Add(game.Content.Load<Texture2D>("Tiles\\Shuttle\\Shuttle2"));
+
+            animation = new Animation(game, spriteBatch, this, slides, 2);
+            animation.Initialize();
+
+            base.Initialize();
             base.Initialize();
         }
 
@@ -46,9 +72,7 @@ namespace Blocker
 
         public override void Draw(GameTime gameTime)
         {
-            spriteBatch.Begin();
-            spriteBatch.Draw(blockTexture, position, Color.White);
-            spriteBatch.End();
+            animation.Draw(gameTime);
         }
     }
 }
