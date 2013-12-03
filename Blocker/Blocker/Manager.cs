@@ -28,7 +28,9 @@ namespace Blocker
         private Menu menu;
         private Level level;
 
-        private enum ManagerState { Splash, Menu, Level }
+        private EndGame endGame;
+
+        private enum ManagerState { Splash, Menu, Level, EndGame }
         private ManagerState state = ManagerState.Splash;
 
         public Manager(Game game, SpriteBatch spriteBatch)
@@ -138,6 +140,18 @@ namespace Blocker
                     LevelComplete();
                 }
             }
+            else if (state == ManagerState.EndGame)
+            {
+                endGame.Update(gameTime);
+
+                if (endGame.Complete)
+                {
+                    menu = new Menu(game, spriteBatch);
+                    splash = null;
+                    state = ManagerState.Menu;
+                    return;
+                }
+            }
 
             base.Update(gameTime);
         }
@@ -146,10 +160,19 @@ namespace Blocker
         {
             Save(level.LevelNumber);
 
-            int nextLevel = level.LevelNumber + 1;
-            level = null;
-            level = new Level(game, spriteBatch, nextLevel);
-            state = ManagerState.Level;
+            if (level.LevelNumber == 25)
+            {
+                level = null;
+                endGame = new EndGame(game, spriteBatch);
+                state = ManagerState.EndGame;
+            }
+            else
+            {
+                int nextLevel = level.LevelNumber + 1;
+                level = null;
+                level = new Level(game, spriteBatch, nextLevel);
+                state = ManagerState.Level;
+            }
         }
 
         private void Save(int levelFinished)
@@ -184,6 +207,8 @@ namespace Blocker
                 menu.Draw(gameTime);
             else if (state == ManagerState.Level)
                 level.Draw(gameTime);
+            else if (state == ManagerState.EndGame)
+                endGame.Draw(gameTime);
             
             base.Draw(gameTime);
         }

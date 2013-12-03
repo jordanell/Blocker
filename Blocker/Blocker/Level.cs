@@ -190,6 +190,12 @@ namespace Blocker
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Update(GameTime gameTime)
         {
+            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
+            {
+                Quit = true;
+                return;
+            }
+
             // Handles early input cancelling
             if (timer == null)
                 timer = new Timer(game, 1000);

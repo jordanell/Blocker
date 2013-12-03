@@ -196,6 +196,8 @@ namespace Blocker
                 UnloadMainMenu();
                 LoadLevel = true;
                 LevelNumber = TopLevel() + 1;
+                if (LevelNumber == 26)
+                    LevelNumber = 25;
             }
 
             else if (levelSelectButton.state == TouchButtonState.Clicked)
