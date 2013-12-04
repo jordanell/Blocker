@@ -198,10 +198,13 @@ namespace Blocker
 
             // Handles early input cancelling
             if (timer == null)
-                timer = new Timer(game, 1000);
+                timer = new Timer(game, 500);
             timer.Update(gameTime);
             if (!timer.IsDone())
-                return; 
+            {
+                while (TouchPanel.IsGestureAvailable) { TouchPanel.ReadGesture(); }
+                return;
+            }
 
             state = LevelState.Idle;
             if (player.Getstate() == PlayerState.Moving)
@@ -227,42 +230,47 @@ namespace Blocker
             // Handle new gestures
             if (state == LevelState.Idle) 
             {
-                while (TouchPanel.IsGestureAvailable)
+                if (TouchPanel.IsGestureAvailable)
                 {
-                    if (state != LevelState.Idle)
-                        break;
-
-                    GestureSample gs = TouchPanel.ReadGesture();
-                    switch (gs.GestureType)
+                    while (TouchPanel.IsGestureAvailable)
                     {
-                        case GestureType.VerticalDrag:
-                        case GestureType.HorizontalDrag:
-                        case GestureType.FreeDrag:
-                            if (SignificantDrag(gs))
+                        if (state != LevelState.Idle)
+                            break;
+
+                        GestureSample gs = TouchPanel.ReadGesture();
+                        switch (gs.GestureType)
+                        {
+                            case GestureType.VerticalDrag:
+                            case GestureType.HorizontalDrag:
+                            case GestureType.FreeDrag:
+                                if (SignificantDrag(gs))
+                                    ProcessPlayerMove(gs.Delta);
+                                break;
+                            case GestureType.Flick:
                                 ProcessPlayerMove(gs.Delta);
-                            break;
-                        case GestureType.Flick:
-                            ProcessPlayerMove(gs.Delta);
-                            break;
-                        case GestureType.DoubleTap:
-                            ProcessPush(gs.Position);
-                            break;
+                                break;
+                            case GestureType.DoubleTap:
+                                ProcessPush(gs.Position);
+                                break;
+                        }
                     }
                 }
+                else
+                {
+                    HUD.Update(gameTime);
+
+                    // Check for reset
+                    if (HUD.Reset)
+                    {
+                        Initialize();
+                        timer = null;
+                    }
+
+                    // Check for Exit()
+                    if (HUD.Exit)
+                        Quit = true;
+                }
             }
-
-            HUD.Update(gameTime);
-
-            // Check for reset
-            if (HUD.Reset)
-            {
-                Initialize();
-                timer = null;
-            }
-
-            // Check for Exit()
-            if (HUD.Exit)
-                Quit = true;
 
             exit.Update(gameTime);
             player.Update(gameTime);

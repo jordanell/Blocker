@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+using Microsoft.Xna.Framework.Input.Touch;
 
 
 namespace Blocker
@@ -138,6 +139,8 @@ namespace Blocker
         public void DecreaseFuel()
         {
             Fuel--;
+            if (Fuel == 0)
+                fuelLabel.TextColor = Color.Red;
         }
 
         public void AddRedMatter()
@@ -168,9 +171,6 @@ namespace Blocker
         {
             resetButton.Update(gameTime);
             exitButton.Update(gameTime);
-
-            if (Fuel == 0)
-                fuelLabel.TextColor = Color.Red;
 
             base.Update(gameTime);
         }
