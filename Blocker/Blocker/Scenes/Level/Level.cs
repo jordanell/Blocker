@@ -251,7 +251,7 @@ namespace Blocker
             if (state == LevelState.Idle) 
             {
                 // Handle player movement
-                Direction direction = InputHandler.Instance.PlayerDirection();
+                Direction direction = InputHandler.Instance.DragDirection();
                 if (direction != Direction.None)
                     ProcessPlayerMove(direction);
 
@@ -263,11 +263,6 @@ namespace Blocker
             InputHandler.Instance.Clear();
 
             base.Update(gameTime);
-        }
-
-        private bool SignificantDrag(GestureSample gs)
-        {
-            return (Math.Abs(gs.Delta.X) > 5 || Math.Abs(gs.Delta.Y) > 5);
         }
 
         private void ProcessPlayerMove(Direction direction)

@@ -10,6 +10,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using System.IO.IsolatedStorage;
 using Microsoft.Xna.Framework.Input.Touch;
+using Blocker.Handlers;
 
 
 namespace Blocker
@@ -45,7 +46,7 @@ namespace Blocker
 
             selector = new List<List<Button>>();
 
-            int topLevel = TopLevel();
+            int topLevel = FileHandler.TopLevel();
 
             for (int y = 0; y <= 4; y++)
             {
@@ -63,30 +64,6 @@ namespace Blocker
             }
 
             base.Initialize();
-        }
-
-        private int TopLevel()
-        {
-            int topLevel = 0;
-
-            using (IsolatedStorageFile gameStorage = IsolatedStorageFile.GetUserStoreForApplication())
-            {
-                if (gameStorage.FileExists("completedLevels"))
-                {
-                    using (IsolatedStorageFileStream fs = gameStorage.OpenFile("completedLevels", System.IO.FileMode.Open))
-                    {
-                        if (fs != null)
-                        {
-                            byte[] bytes = new byte[10];
-                            int x = fs.Read(bytes, 0, 10);
-                            if (x > 0)
-                                topLevel = System.BitConverter.ToInt32(bytes, 0);
-                        }
-                    }
-                }
-            }
-
-            return topLevel;
         }
 
         /// <summary>

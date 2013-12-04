@@ -67,7 +67,7 @@ namespace Blocker
             return Vector2.Zero;
         }
 
-        public Direction PlayerDirection()
+        public Direction DragDirection()
         {
             Vector2 delta = Vector2.Zero;
             foreach (GestureSample gs in currentGestures)
@@ -110,7 +110,6 @@ namespace Blocker
             {
                 GestureSample gs = TouchPanel.ReadGesture();
                 currentGestures.Add(gs);
-                System.Diagnostics.Debug.WriteLine(gs.GestureType.ToString());
             }
         }
     }

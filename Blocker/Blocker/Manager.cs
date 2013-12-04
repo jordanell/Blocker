@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using System.IO.IsolatedStorage;
+using Blocker.Handlers;
 
 
 namespace Blocker
@@ -49,7 +50,7 @@ namespace Blocker
         public override void Initialize()
         {
             // Check for needed files
-            CheckFiles();
+            FileHandler.CheckFiles();
 
             // Create the splash screen
             splash = new SplashScreen(game, spriteBatch, 3000);
@@ -61,30 +62,6 @@ namespace Blocker
             menu = new Menu(game, spriteBatch);
 
             base.Initialize();
-        }
-
-        private void CheckFiles()
-        {
-            byte[] bytes = System.BitConverter.GetBytes(0);
-            CreateFileIfDoesNotExist("completedLevels", bytes);
-
-            bytes = System.BitConverter.GetBytes(1);
-            CreateFileIfDoesNotExist("settings", bytes);
-        }
-
-        private void CreateFileIfDoesNotExist(string file, byte[] bytes)
-        {
-            IsolatedStorageFile gameStorage = IsolatedStorageFile.GetUserStoreForApplication();
-            IsolatedStorageFileStream fs = null;
-
-            if (!gameStorage.FileExists(file))
-            {
-                using (fs = gameStorage.CreateFile(file))
-                {
-                    if (fs != null)
-                        fs.Write(bytes, 0, bytes.Length);
-                }
-            }
         }
 
         /// <summary>
@@ -158,8 +135,8 @@ namespace Blocker
 
         private void LevelComplete()
         {
-            if (level.LevelNumber > TopLevel())
-                Save(level.LevelNumber);
+            if (level.LevelNumber > FileHandler.TopLevel())
+                FileHandler.Save(level.LevelNumber);
 
             if (level.LevelNumber == 25)
             {
@@ -173,45 +150,6 @@ namespace Blocker
                 level = null;
                 level = new Level(game, spriteBatch, nextLevel);
                 state = ManagerState.Level;
-            }
-        }
-
-        private int TopLevel()
-        {
-            int topLevel = 0;
-
-            using (IsolatedStorageFile gameStorage = IsolatedStorageFile.GetUserStoreForApplication())
-            {
-                if (gameStorage.FileExists("completedLevels"))
-                {
-                    using (IsolatedStorageFileStream fs = gameStorage.OpenFile("completedLevels", System.IO.FileMode.Open))
-                    {
-                        if (fs != null)
-                        {
-                            byte[] bytes = new byte[10];
-                            int x = fs.Read(bytes, 0, 10);
-                            if (x > 0)
-                                topLevel = System.BitConverter.ToInt32(bytes, 0);
-                        }
-                    }
-                }
-            }
-
-            return topLevel;
-        }
-
-        private void Save(int levelFinished)
-        {
-            IsolatedStorageFile gameStorage = IsolatedStorageFile.GetUserStoreForApplication();
-            IsolatedStorageFileStream fs = null;
-
-            using (fs = gameStorage.CreateFile("completedLevels"))
-            {
-                if (fs != null)
-                {
-                    byte[] bytes = System.BitConverter.GetBytes(levelFinished);
-                    fs.Write(bytes, 0, bytes.Length);
-                }
             }
         }
 

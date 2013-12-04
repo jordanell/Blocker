@@ -66,23 +66,24 @@
   <ItemGroup>
     <Compile Include="Animation.cs" />
     <Compile Include="Background.cs" />
-    <Compile Include="Block.cs" />
-    <Compile Include="Button.cs" />
+    <Compile Include="Grid\Block.cs" />
+    <Compile Include="UI\Button.cs" />
     <Compile Include="EndGame.cs" />
-    <Compile Include="Exit.cs" />
-    <Compile Include="HeadsUpDisplay.cs" />
-    <Compile Include="InputHandler.cs" />
-    <Compile Include="Label.cs" />
+    <Compile Include="Entities\Exit.cs" />
+    <Compile Include="Handlers\FileHandler.cs" />
+    <Compile Include="UI\HeadsUpDisplay.cs" />
+    <Compile Include="Handlers\InputHandler.cs" />
+    <Compile Include="UI\Label.cs" />
     <Compile Include="Level.cs" />
     <Compile Include="LevelSelector.cs" />
     <Compile Include="Manager.cs" />
     <Compile Include="Matter.cs" />
     <Compile Include="Menu.cs" />
-    <Compile Include="MoveableBlock.cs" />
+    <Compile Include="Grid\MoveableBlock.cs" />
     <Compile Include="Movement.cs" />
     <Compile Include="ParticleSystem\Particle.cs" />
     <Compile Include="ParticleSystem\ParticleController.cs" />
-    <Compile Include="Player.cs" />
+    <Compile Include="Entities\Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SoundMixer.cs" />
     <Compile Include="SplashScreen.cs" />
@@ -183,6 +184,7 @@
       <XnaReferenceType>Content</XnaReferenceType>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.targets" />
   <!--

@@ -38,7 +38,7 @@ namespace Blocker
             graphics.PreferredBackBufferHeight = 800;
 
             // Make vertical drag and flick the  gestures that we're interested in.
-            InputHandler.Instance.EnableLevelGestures();
+            InputHandler.Instance.EnableGameGestures();
         }
 
         /// <summary>
