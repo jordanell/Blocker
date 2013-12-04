@@ -83,10 +83,10 @@ namespace Blocker
             this.color = color;
         }
 
-        private bool isButtonTouched(TouchLocation touch) 
+        private bool isButtonTouched(Vector2 position) 
         {
-            return (touch.Position.X >= destination.Left && touch.Position.X <= destination.Right &&
-                    touch.Position.Y >= destination.Top  && touch.Position.Y <= destination.Bottom);
+            return (position.X >= destination.Left && position.X <= destination.Right &&
+                    position.Y >= destination.Top  && position.Y <= destination.Bottom);
         }
 
         /// <summary>
@@ -98,11 +98,11 @@ namespace Blocker
             if (!enabled)
                 return;
 
-            TouchCollection touchCollection = TouchPanel.GetState();
-            foreach (TouchLocation touch in touchCollection)
+            foreach (GestureSample gs in InputHandler.Instance.Taps())
             {
-                if (isButtonTouched(touch))
+                if (isButtonTouched(gs.Position))
                 {
+                    InputHandler.Instance.Clear();
                     state = TouchButtonState.Clicked;
                     SoundMixer.Instance(game).PlayEffect("Audio\\button");
                 }
@@ -116,16 +116,8 @@ namespace Blocker
             spriteBatch.Begin();
             if (enabled)
             {
-                if (state == TouchButtonState.Up)
-                {
-                    spriteBatch.Draw(texture, destination, Color.White);
-                    spriteBatch.DrawString(font, text, textLocation, color);
-                }
-                else
-                {
-                    spriteBatch.Draw(texture, destination, Color.Silver);
-                    spriteBatch.DrawString(font, text, textLocation,Color.Silver);
-                }
+                spriteBatch.Draw(texture, destination, Color.White);
+                spriteBatch.DrawString(font, text, textLocation, color);
             }
             else
             {

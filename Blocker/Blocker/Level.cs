@@ -196,13 +196,16 @@ namespace Blocker
                 return;
             }
 
+            exit.Update(gameTime);
+            player.Update(gameTime);
+
             // Handles early input cancelling
             if (timer == null)
                 timer = new Timer(game, 500);
             timer.Update(gameTime);
             if (!timer.IsDone())
             {
-                while (TouchPanel.IsGestureAvailable) { TouchPanel.ReadGesture(); }
+                InputHandler.Instance.Clear();
                 return;
             }
 
@@ -215,6 +218,23 @@ namespace Blocker
             {
                 if (player.GetPosition().Intersects(exit.GetPosition()))
                     complete = true;
+            }
+
+            HUD.Update(gameTime);
+
+            // Check for reset
+            if (HUD.Reset)
+            {
+                Initialize();
+                timer = null;
+                return;
+            }
+
+            // Check for Exit()
+            if (HUD.Exit)
+            {
+                Quit = true;
+                return;
             }
 
             // Update blocks
@@ -230,50 +250,17 @@ namespace Blocker
             // Handle new gestures
             if (state == LevelState.Idle) 
             {
-                if (TouchPanel.IsGestureAvailable)
-                {
-                    while (TouchPanel.IsGestureAvailable)
-                    {
-                        if (state != LevelState.Idle)
-                            break;
+                // Handle player movement
+                Direction direction = InputHandler.Instance.PlayerDirection();
+                if (direction != Direction.None)
+                    ProcessPlayerMove(direction);
 
-                        GestureSample gs = TouchPanel.ReadGesture();
-                        switch (gs.GestureType)
-                        {
-                            case GestureType.VerticalDrag:
-                            case GestureType.HorizontalDrag:
-                            case GestureType.FreeDrag:
-                                if (SignificantDrag(gs))
-                                    ProcessPlayerMove(gs.Delta);
-                                break;
-                            case GestureType.Flick:
-                                ProcessPlayerMove(gs.Delta);
-                                break;
-                            case GestureType.DoubleTap:
-                                ProcessPush(gs.Position);
-                                break;
-                        }
-                    }
-                }
-                else
-                {
-                    HUD.Update(gameTime);
-
-                    // Check for reset
-                    if (HUD.Reset)
-                    {
-                        Initialize();
-                        timer = null;
-                    }
-
-                    // Check for Exit()
-                    if (HUD.Exit)
-                        Quit = true;
-                }
+                Vector2 doubleTap = InputHandler.Instance.DoubleTap();
+                if (doubleTap != Vector2.Zero)
+                    ProcessPush(doubleTap);
             }
 
-            exit.Update(gameTime);
-            player.Update(gameTime);
+            InputHandler.Instance.Clear();
 
             base.Update(gameTime);
         }
@@ -283,13 +270,10 @@ namespace Blocker
             return (Math.Abs(gs.Delta.X) > 5 || Math.Abs(gs.Delta.Y) > 5);
         }
 
-        private void ProcessPlayerMove(Vector2 delta)
+        private void ProcessPlayerMove(Direction direction)
         {
             Vector2 origin = new Vector2(
                 player.GetPosition().X / blockWidth, (player.GetPosition().Y / blockHeight) - 2);
-
-            // Get direction and destination of move
-            Direction direction = GetDirection(delta);
             Vector2 destination = GetDestination(origin, direction);
 
             if (destination.X != -1 && destination != origin && HUD.Fuel > 0)

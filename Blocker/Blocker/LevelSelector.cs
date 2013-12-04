@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using System.IO.IsolatedStorage;
+using Microsoft.Xna.Framework.Input.Touch;
 
 
 namespace Blocker
@@ -25,8 +26,6 @@ namespace Blocker
 
         public bool LoadLevel { get; private set; }
         public int LevelNumber { get; private set; }
-
-        private Timer timer;
 
         public LevelSelector(Game game, SpriteBatch spriteBatch)
             : base(game)
@@ -96,12 +95,6 @@ namespace Blocker
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Update(GameTime gameTime)
         {
-            if (timer == null)
-                timer = new Timer(game, 1000);
-            timer.Update(gameTime);
-            if (!timer.IsDone())
-                return; 
-
             for (int y = 0; y <= 4; y++)
             {
                 for (int x = 0; x < 5; x++)

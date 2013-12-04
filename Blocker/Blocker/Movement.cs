@@ -12,7 +12,7 @@ using Microsoft.Xna.Framework.Media;
 
 namespace Blocker
 {
-    public enum Direction { Up, Down, Left, Right }
+    public enum Direction { None, Up, Down, Left, Right }
     /// <summary>
     /// This is a game component that implements IUpdateable.
     /// </summary>

@@ -27,6 +27,7 @@ namespace Blocker
         public Timer(Game game, int duration)
             : base(game)
         {
+            this.game = game;
             this.duration = duration;
         }
 
@@ -54,7 +55,7 @@ namespace Blocker
         {
             if (start == -1)
             {
-                start = gameTime.ElapsedGameTime.Milliseconds;
+                start = (int)gameTime.TotalGameTime.TotalMilliseconds;
                 current = start;
                 end = start + duration;
                 return;

@@ -71,6 +71,7 @@
     <Compile Include="EndGame.cs" />
     <Compile Include="Exit.cs" />
     <Compile Include="HeadsUpDisplay.cs" />
+    <Compile Include="InputHandler.cs" />
     <Compile Include="Label.cs" />
     <Compile Include="Level.cs" />
     <Compile Include="LevelSelector.cs" />

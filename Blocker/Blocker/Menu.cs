@@ -51,8 +51,6 @@ namespace Blocker
         public bool LoadLevel { get; private set; }
         public int LevelNumber { get; private set; }
 
-        private Timer timer;
-
         public Menu(Game game, SpriteBatch spriteBatch)
             : base(game)
         {
@@ -151,12 +149,6 @@ namespace Blocker
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Update(GameTime gameTime)
         {
-            if (timer == null)
-                timer = new Timer(game, 1000);
-            timer.Update(gameTime);
-            if (!timer.IsDone())
-                return; 
-
             switch (state)
             {
                 case MenuState.Main:
@@ -181,15 +173,14 @@ namespace Blocker
 
         private void UpdateMainMenu(GameTime gameTime)
         {
+            // Allows the game to exit
+            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
+                game.Exit();
             playButton.Update(gameTime);
             levelSelectButton.Update(gameTime);
             instructionsButton.Update(gameTime);
             settingsButton.Update(gameTime);
             exitButton.Update(gameTime);
-
-            // Allows the game to exit
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
-                game.Exit();
 
             if (playButton.state == TouchButtonState.Clicked)
             {

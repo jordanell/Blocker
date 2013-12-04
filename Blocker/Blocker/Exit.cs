@@ -57,7 +57,6 @@ namespace Blocker
             animation.Initialize();
 
             base.Initialize();
-            base.Initialize();
         }
 
         /// <summary>

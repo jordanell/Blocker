@@ -38,9 +38,7 @@ namespace Blocker
             graphics.PreferredBackBufferHeight = 800;
 
             // Make vertical drag and flick the  gestures that we're interested in.
-            TouchPanel.EnabledGestures =
-                GestureType.VerticalDrag | GestureType.HorizontalDrag | GestureType.FreeDrag|
-                GestureType.Flick | GestureType.DoubleTap | GestureType.Tap;
+            InputHandler.Instance.EnableLevelGestures();
         }
 
         /// <summary>
@@ -84,6 +82,8 @@ namespace Blocker
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
+            InputHandler.Instance.Update();
+
             // Update the manager
             manager.Update(gameTime);
 

@@ -26,7 +26,7 @@ namespace Blocker
         private int slide = 0;
 
         private int speed;
-        private int count;
+        private int count = 0;
 
         public Animation(Game game, SpriteBatch spriteBatch, Block block, List<Texture2D> slides, int speed)
             : base(game)
