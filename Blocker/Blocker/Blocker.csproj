@@ -64,30 +64,30 @@
     <Reference Include="System.Net" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Animation.cs" />
-    <Compile Include="Background.cs" />
-    <Compile Include="Grid\Block.cs" />
+    <Compile Include="Entities\Animation.cs" />
+    <Compile Include="UI\Background.cs" />
+    <Compile Include="Entities\Grid\Block.cs" />
     <Compile Include="UI\Button.cs" />
-    <Compile Include="EndGame.cs" />
+    <Compile Include="Scenes\Level\EndGame.cs" />
     <Compile Include="Entities\Exit.cs" />
     <Compile Include="Handlers\FileHandler.cs" />
     <Compile Include="UI\HeadsUpDisplay.cs" />
     <Compile Include="Handlers\InputHandler.cs" />
     <Compile Include="UI\Label.cs" />
-    <Compile Include="Level.cs" />
-    <Compile Include="LevelSelector.cs" />
+    <Compile Include="Scenes\Level\Level.cs" />
+    <Compile Include="Scenes\Menu\LevelSelector.cs" />
     <Compile Include="Manager.cs" />
-    <Compile Include="Matter.cs" />
-    <Compile Include="Menu.cs" />
-    <Compile Include="Grid\MoveableBlock.cs" />
-    <Compile Include="Movement.cs" />
+    <Compile Include="Entities\Matter.cs" />
+    <Compile Include="Scenes\Menu\Menu.cs" />
+    <Compile Include="Entities\Grid\MoveableBlock.cs" />
+    <Compile Include="Entities\Movement.cs" />
     <Compile Include="ParticleSystem\Particle.cs" />
     <Compile Include="ParticleSystem\ParticleController.cs" />
     <Compile Include="Entities\Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SoundMixer.cs" />
-    <Compile Include="SplashScreen.cs" />
-    <Compile Include="Timer.cs" />
+    <Compile Include="Handlers\SoundMixer.cs" />
+    <Compile Include="Scenes\Menu\SplashScreen.cs" />
+    <Compile Include="Misc\Timer.cs" />
     <None Include="Levels\level25.lvl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

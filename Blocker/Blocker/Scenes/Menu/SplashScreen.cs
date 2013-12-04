@@ -60,11 +60,10 @@ namespace Blocker
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Update(GameTime gameTime)
         {
-            TouchCollection touchCollection = TouchPanel.GetState();
-            if (touchCollection.Count > 0)
+            foreach (GestureSample gs in InputHandler.Instance.Taps())
             {
+                InputHandler.Instance.Clear();
                 complete = true;
-                return;
             }
 
             switch (state)
