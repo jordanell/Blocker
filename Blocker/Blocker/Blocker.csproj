@@ -65,6 +65,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Entities\Animation.cs" />
+    <Compile Include="ParticleSystem\LightningBolt.cs" />
+    <Compile Include="ParticleSystem\LightningController.cs" />
+    <Compile Include="ParticleSystem\Line.cs" />
     <Compile Include="UI\Background.cs" />
     <Compile Include="Entities\Grid\Block.cs" />
     <Compile Include="UI\Button.cs" />

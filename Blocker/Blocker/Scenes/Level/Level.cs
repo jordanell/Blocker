@@ -10,6 +10,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using Microsoft.Xna.Framework.Input.Touch;
+using Blocker.ParticleSystem;
 
 
 namespace Blocker
@@ -44,6 +45,9 @@ namespace Blocker
         private Player player;
         private Exit exit;
 
+        // Lightning
+        private LightningController lc;
+
         private enum LevelState { Idle, Moving };
         private LevelState state = LevelState.Idle;
 
@@ -65,6 +69,8 @@ namespace Blocker
         /// </summary>
         public override void Initialize()
         {
+            lc = new LightningController(game, spriteBatch);
+
             HUD = new HeadsUpDisplay(game, spriteBatch);
             HUD.Level = levelNumber;
 
@@ -246,6 +252,8 @@ namespace Blocker
                         map[y, x].Update(gameTime);
                 }
             }
+
+            lc.Update(gameTime);
             
             // Handle new gestures
             if (state == LevelState.Idle) 
@@ -340,6 +348,7 @@ namespace Blocker
                         map[(int)origin.Y, (int)origin.X] = null;
                         Vector2 dest = GridIndexOf(new Vector2(move.end.X, move.end.Y));
                         map[(int)dest.Y, (int)dest.X] = target;
+                        GenerateLightning(direction, new Vector2(move.start.X, move.start.Y), Color.Red);
                     }
                 }
                 else if (color == Color.Blue)
@@ -352,11 +361,45 @@ namespace Blocker
                         map[(int)origin.Y, (int)origin.X] = null;
                         Vector2 dest = GridIndexOf(new Vector2(move.end.X, move.end.Y));
                         map[(int)dest.Y, (int)dest.X] = target;
+                        GenerateLightning(direction, new Vector2(move.start.X, move.start.Y), Color.SkyBlue);
                     }
 
                 }
             }
 
+        }
+
+        private void GenerateLightning(Direction direction, Vector2 dest, Color color)
+        {
+            Vector2 source = Vector2.Zero;
+            switch (direction)
+            {
+                case Direction.Up:
+                    source.X = player.GetPosition().X + (blockWidth / 2);
+                    source.Y = player.GetPosition().Y;
+                    dest.X += blockWidth / 2;
+                    dest.Y += blockHeight; 
+                    break;
+                case Direction.Down:
+                    source.X = player.GetPosition().X + (blockWidth / 2);
+                    source.Y = player.GetPosition().Y + (blockHeight);
+                    dest.X += blockWidth / 2;
+                    break;
+                case Direction.Left:
+                    source.X = player.GetPosition().X;
+                    source.Y = player.GetPosition().Y + (blockHeight / 2);
+                    dest.X += blockWidth;
+                    dest.Y += blockHeight / 2; 
+                    break;
+                case Direction.Right:
+                    source.X = player.GetPosition().X + (blockWidth);
+                    source.Y = player.GetPosition().Y + (blockHeight / 2);
+                    dest.Y -= blockHeight / 2; 
+                    break;
+            }
+
+            if (source != Vector2.Zero)
+                lc.CreateLightning(source, dest, color);
         }
 
         private Vector2 GridIndexOf(Vector2 vector)
@@ -483,6 +526,9 @@ namespace Blocker
                         map[y, x].Draw(gameTime);
                 }
             }
+
+            // Draw lightning
+            lc.Draw(gameTime);
 
             // Draw the exit
             exit.Draw(gameTime);

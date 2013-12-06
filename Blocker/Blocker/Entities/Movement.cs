@@ -20,7 +20,7 @@ namespace Blocker
     {
         private Game game;
 
-        private Rectangle start;
+        public Rectangle start;
         public Rectangle end;
         public Rectangle position;
 
