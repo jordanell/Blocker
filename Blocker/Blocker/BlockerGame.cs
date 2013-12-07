@@ -63,6 +63,8 @@ namespace Blocker
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
+            FileHandler.Save(3);
+
             // Create the game manager
             manager = new Manager(this, spriteBatch);
         }

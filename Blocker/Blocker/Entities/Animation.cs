@@ -21,6 +21,7 @@ namespace Blocker
         private SpriteBatch spriteBatch;
 
         private Block block;
+        private Player player;
 
         private List<Texture2D> slides;
         private int slide = 0;
@@ -34,6 +35,16 @@ namespace Blocker
             this.game = game;
             this.spriteBatch = spriteBatch;
             this.block = block;
+            this.slides = slides;
+            this.speed = speed;
+        }
+
+        public Animation(Game game, SpriteBatch spriteBatch, Player player, List<Texture2D> slides, int speed)
+            : base(game)
+        {
+            this.game = game;
+            this.spriteBatch = spriteBatch;
+            this.player = player;
             this.slides = slides;
             this.speed = speed;
         }
@@ -73,7 +84,10 @@ namespace Blocker
             }
 
             spriteBatch.Begin();
-            spriteBatch.Draw(slides[slide], block.GetPosition(), Color.White);
+            if (block != null)
+                spriteBatch.Draw(slides[slide], block.GetPosition(), Color.White);
+            else if (player != null)
+                spriteBatch.Draw(slides[slide], player.GetPosition(), Color.White);
             spriteBatch.End();
 
             base.Draw(gameTime);

@@ -23,7 +23,11 @@ namespace Blocker
 
         private Rectangle position;
 
-        private Texture2D texture;
+        private Animation idle;
+        private Texture2D up;
+        private Texture2D down;
+        private Texture2D left;
+        private Texture2D right;
 
         private PlayerState state = PlayerState.Idle;
         private Movement movement;
@@ -45,7 +49,25 @@ namespace Blocker
         /// </summary>
         public override void Initialize()
         {
-            texture = game.Content.Load<Texture2D>("Buttons\\GreenButton");
+            List<Texture2D> slides = new List<Texture2D>();
+            slides.Add(game.Content.Load<Texture2D>("Player\\Idle\\Idle1"));
+            slides.Add(game.Content.Load<Texture2D>("Player\\Idle\\Idle2"));
+            slides.Add(game.Content.Load<Texture2D>("Player\\Idle\\Idle3"));
+            slides.Add(game.Content.Load<Texture2D>("Player\\Idle\\Idle4"));
+            slides.Add(game.Content.Load<Texture2D>("Player\\Idle\\Idle5"));
+            slides.Add(game.Content.Load<Texture2D>("Player\\Idle\\Idle6"));
+            slides.Add(game.Content.Load<Texture2D>("Player\\Idle\\Idle7"));
+            slides.Add(game.Content.Load<Texture2D>("Player\\Idle\\Idle8"));
+            slides.Add(game.Content.Load<Texture2D>("Player\\Idle\\Idle9"));
+            slides.Add(game.Content.Load<Texture2D>("Player\\Idle\\Idle10"));
+
+            idle = new Animation(game, spriteBatch, this, slides, 6);
+            idle.Initialize();
+
+            up = game.Content.Load<Texture2D>("Player\\Up\\Astronaut");
+            down = game.Content.Load<Texture2D>("Player\\Idle\\Idle1");
+            right = game.Content.Load<Texture2D>("Player\\Right\\Astronaut");
+            left = game.Content.Load<Texture2D>("Player\\Left\\Astronaut");
 
             base.Initialize();
         }
@@ -107,16 +129,28 @@ namespace Blocker
 
         public override void Draw(GameTime gameTime)
         {
-            if (state == PlayerState.Idle)
-            {
-                spriteBatch.Begin();
-                spriteBatch.Draw(texture, position, Color.White);
-                spriteBatch.End();
-            }
+            if(state == PlayerState.Idle)
+                idle.Draw(gameTime);
             else if (state == PlayerState.Moving)
             {
                 spriteBatch.Begin();
-                spriteBatch.Draw(texture, movement.position, Color.White);
+                switch(movement.direction)
+                {
+                    case Direction.Up:
+                        spriteBatch.Draw(up, movement.position, Color.White);
+                        break;
+                    case Direction.Right:
+                        spriteBatch.Draw(right, new Rectangle(movement.position.X, movement.position.Y - 6, 40, 40), null, Color.White, MathHelper.ToRadians(30f),
+                            Vector2.Zero, SpriteEffects.None, 0f);
+                        break;
+                    case Direction.Left:
+                        spriteBatch.Draw(left, new Rectangle(movement.position.X, movement.position.Y + 12, 40, 40), null, Color.White, MathHelper.ToRadians(-30f),
+                            Vector2.Zero, SpriteEffects.None, 0f);
+                        break;
+                    case Direction.Down:
+                        spriteBatch.Draw(down, movement.position, Color.White);
+                        break;
+                }
                 spriteBatch.End();
             }
             

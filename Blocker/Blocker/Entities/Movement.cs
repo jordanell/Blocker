@@ -24,7 +24,7 @@ namespace Blocker
         public Rectangle end;
         public Rectangle position;
 
-        private Direction direction;
+        public Direction direction;
 
         private int tileWidth = 40;
         private int tileHeight = 40;

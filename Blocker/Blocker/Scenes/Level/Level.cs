@@ -394,7 +394,7 @@ namespace Blocker
                 case Direction.Right:
                     source.X = player.GetPosition().X + (blockWidth);
                     source.Y = player.GetPosition().Y + (blockHeight / 2);
-                    dest.Y -= blockHeight / 2; 
+                    dest.Y += blockHeight / 2; 
                     break;
             }
 
