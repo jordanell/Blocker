@@ -320,6 +320,7 @@ namespace Blocker
 
                 player.Move(movement);
                 state = LevelState.Moving;
+                SoundMixer.Instance(game).PlayEffect("Audio\\Move");
             }
         }
 
@@ -380,6 +381,7 @@ namespace Blocker
                         Vector2 dest = GridIndexOf(new Vector2(move.end.X, move.end.Y));
                         map[(int)dest.Y, (int)dest.X] = target;
                         GenerateLightning(direction, new Vector2(move.start.X, move.start.Y), Color.Red);
+                        SoundMixer.Instance(game).PlayEffect("Audio\\Shoot");
                     }
                 }
                 else if (color == Color.Blue)
@@ -393,6 +395,7 @@ namespace Blocker
                         Vector2 dest = GridIndexOf(new Vector2(move.end.X, move.end.Y));
                         map[(int)dest.Y, (int)dest.X] = target;
                         GenerateLightning(direction, new Vector2(move.start.X, move.start.Y), Color.SkyBlue);
+                        SoundMixer.Instance(game).PlayEffect("Audio\\Shoot");
                     }
 
                 }

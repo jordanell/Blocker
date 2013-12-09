@@ -105,7 +105,7 @@ namespace Blocker
                 {
                     InputHandler.Instance.Clear();
                     state = TouchButtonState.Clicked;
-                    SoundMixer.Instance(game).PlayEffect("Audio\\button");
+                    SoundMixer.Instance(game).PlayEffect("Audio\\Button");
                 }
             }
 

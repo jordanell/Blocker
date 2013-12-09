@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+using Microsoft.Xna.Framework.Input.Touch;
 
 
 namespace Blocker.Entities
@@ -22,8 +23,10 @@ namespace Blocker.Entities
 
         private int instNumber;
 
-        private Button exit;
+        private Texture2D exit;
         private Texture2D inst;
+
+        private Rectangle position;
 
         public bool Complete { get; private set; }
 
@@ -46,11 +49,23 @@ namespace Blocker.Entities
             String file = "Instructions\\Inst" + Convert.ToString(instNumber);
 
             inst = game.Content.Load<Texture2D>(file);
+            exit = game.Content.Load<Texture2D>("Instructions\\X");
 
-            Texture2D button = game.Content.Load<Texture2D>("Instructions\\X");
-            exit = new Button(game, spriteBatch, new Rectangle(370, 280, 40, 40), button, null, "");
+            SetPosition();
 
             base.Initialize();
+        }
+
+        private void SetPosition()
+        {
+            int y = 80 + (360 - (inst.Height / 2));
+            position = new Rectangle(90, y, inst.Width, inst.Height);
+        }
+
+        private bool isXTouched(Vector2 position)
+        {
+            return (position.X >= 340 && position.X <= 460 &&
+                    position.Y >= this.position.Y - 70 && position.Y <= this.position.Y + 50);
         }
 
         /// <summary>
@@ -59,10 +74,14 @@ namespace Blocker.Entities
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Update(GameTime gameTime)
         {
-            if (exit.state == TouchButtonState.Clicked)
-                Complete = true;
-
-            exit.Update(gameTime);
+            foreach (GestureSample gs in InputHandler.Instance.Taps())
+            {
+                if (isXTouched(gs.Position))
+                {
+                    Complete = true;
+                    SoundMixer.Instance(game).PlayEffect("Audio\\Button");
+                }
+            }
 
             base.Update(gameTime);
         }
@@ -70,10 +89,9 @@ namespace Blocker.Entities
         public override void Draw(GameTime gameTime)
         {
             spriteBatch.Begin();
-            spriteBatch.Draw(inst, new Rectangle(90, 300, inst.Width, inst.Height), Color.White);
+            spriteBatch.Draw(inst, position, Color.White);
+            spriteBatch.Draw(exit, new Rectangle(380, position.Y - 30, 40, 40), Color.White);
             spriteBatch.End();
-
-            exit.Draw(gameTime);
             
             base.Draw(gameTime);
         }

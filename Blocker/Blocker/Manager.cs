@@ -143,6 +143,7 @@ namespace Blocker
                 level = null;
                 endGame = new EndGame(game, spriteBatch);
                 state = ManagerState.EndGame;
+                SoundMixer.Instance(game).PlayEffect("Audio\\Winner");
             }
             else
             {
@@ -150,6 +151,7 @@ namespace Blocker
                 level = null;
                 level = new Level(game, spriteBatch, nextLevel);
                 state = ManagerState.Level;
+                SoundMixer.Instance(game).PlayEffect("Audio\\LevelComplete");
             }
         }
 

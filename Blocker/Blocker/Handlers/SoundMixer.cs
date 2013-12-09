@@ -56,7 +56,7 @@ namespace Blocker
             effects.TryGetValue(file, out effect);
             if (effect == null)
             {
-                effects.Add(file, game.Content.Load<SoundEffect>("Audio\\button"));
+                effects.Add(file, game.Content.Load<SoundEffect>(file));
                 effect = effects[file];
             }
 
