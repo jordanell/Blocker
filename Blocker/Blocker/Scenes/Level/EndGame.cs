@@ -90,12 +90,11 @@ namespace Blocker
             }
 
             // Monitor touches
-            TouchCollection touchCollection = TouchPanel.GetState();
-            if (touchCollection.Count > 0)
+            foreach (GestureSample gs in InputHandler.Instance.Taps())
             {
-                complete = true;
-                return;
+                Complete = true;
             }
+            InputHandler.Instance.Clear();
 
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
             {
