@@ -33,7 +33,7 @@ namespace Blocker.ParticleSystem
             this.game = game;
             this.spriteBatch = spriteBatch;
 
-            segments = CreateBolt(source, dest, 2, color);
+            segments = CreateBolt(source, dest, 4, color);
 
             alpha = 1f;
             fadeOutRate = 0.03f;

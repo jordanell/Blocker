@@ -20,12 +20,14 @@
     <XapFilename>$(AssemblyName).xap</XapFilename>
     <SilverlightManifestTemplate>Properties\AppManifest.xml</SilverlightManifestTemplate>
     <XnaWindowsPhoneManifestTemplate>Properties\WMAppManifest.xml</XnaWindowsPhoneManifestTemplate>
-    <TileImage>PhoneGameThumb.png</TileImage>
-    <TileTitle>Blocker</TileTitle>
+    <TileImage>MediumTile.png</TileImage>
+    <TileTitle>Block3r</TileTitle>
     <SupportedCultures>
     </SupportedCultures>
     <ApplicationIcon>Game.ico</ApplicationIcon>
-    <Thumbnail>PhoneGameThumb.png</Thumbnail>
+    <Thumbnail>
+    </Thumbnail>
+    <GameStartupType>Blocker.BlockerGame</GameStartupType>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|Windows Phone' ">
     <DebugSymbols>true</DebugSymbols>
@@ -177,9 +179,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game.ico" />
-    <Content Include="PhoneGameThumb.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <Content Include="MediumTile.png" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BlockerContent\BlockerContent.contentproj">
