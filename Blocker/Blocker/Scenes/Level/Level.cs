@@ -544,6 +544,8 @@ namespace Blocker
 
             // Delete matter from map
             map[y, x] = null;
+
+            SoundMixer.Instance(game).PlayEffect("Audio\\Matter");
         }
 
         public override void Draw(GameTime gameTime)
