@@ -11,6 +11,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using Microsoft.Xna.Framework.Input.Touch;
 using Blocker.ParticleSystem;
+using Blocker.Entities;
 
 
 namespace Blocker
@@ -45,6 +46,9 @@ namespace Blocker
         private Player player;
         private Exit exit;
 
+        // Instructions
+        private Instruction inst;
+
         // Lightning
         private LightningController lc;
 
@@ -60,14 +64,14 @@ namespace Blocker
             this.spriteBatch = spriteBatch;
             this.levelNumber = levelNumber;
 
-            Initialize();
+            Initialize(true);
         }
 
         /// <summary>
         /// Allows the game component to perform any initialization it needs to before starting
         /// to run.  This is where it can query for any required services and load content.
         /// </summary>
-        public override void Initialize()
+        public void Initialize(bool showInstructions)
         {
             lc = new LightningController(game, spriteBatch);
 
@@ -76,6 +80,10 @@ namespace Blocker
 
             map = new Block[18, 12];
             LoadLevel();
+
+            inst = null;
+            if(showInstructions)
+                LoadInstruction();
 
             base.Initialize();
         }
@@ -190,6 +198,23 @@ namespace Blocker
             }
         }
 
+        private void LoadInstruction()
+        {
+            switch (levelNumber)
+            {
+                case 1:
+                case 2:
+                case 4:
+                case 5:
+                case 7:
+                    inst = new Instruction(game, spriteBatch, levelNumber);
+                    break;
+                default:
+                    inst = null;
+                    break;
+            }
+        }
+
         /// <summary>
         /// Allows the game component to update itself.
         /// </summary>
@@ -231,7 +256,7 @@ namespace Blocker
             // Check for reset
             if (HUD.Reset)
             {
-                Initialize();
+                Initialize(false);
                 timer = null;
                 return;
             }
@@ -256,7 +281,7 @@ namespace Blocker
             lc.Update(gameTime);
             
             // Handle new gestures
-            if (state == LevelState.Idle) 
+            if (state == LevelState.Idle && inst == null) 
             {
                 // Handle player movement
                 Direction direction = InputHandler.Instance.DragDirection();
@@ -266,6 +291,12 @@ namespace Blocker
                 Vector2 doubleTap = InputHandler.Instance.DoubleTap();
                 if (doubleTap != Vector2.Zero)
                     ProcessPush(doubleTap);
+            }
+            else if (state == LevelState.Idle && inst != null)
+            {
+                inst.Update(gameTime);
+                if (inst.Complete)
+                    inst = null;
             }
 
             InputHandler.Instance.Clear();
@@ -535,6 +566,10 @@ namespace Blocker
 
             // Draw player
             player.Draw(gameTime);
+
+            // Draw instructions
+            if (inst != null)
+                inst.Draw(gameTime);
 
 
             base.Draw(gameTime);

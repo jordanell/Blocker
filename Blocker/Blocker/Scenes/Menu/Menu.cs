@@ -32,15 +32,11 @@ namespace Blocker
         // Buttons
         private Button playButton;
         private Button levelSelectButton;
-        private Button instructionsButton;
         private Button settingsButton;
         private Button exitButton;
 
         // Level selector
         private LevelSelector selector;
-
-        // Instructions
-        private Texture2D instructions;
 
         // Settings
         private Label sound;
@@ -85,9 +81,8 @@ namespace Blocker
 
             playButton = new Button(game, spriteBatch, new Rectangle(103, 275, 275, 70), blueButton, menuFontBig, "Play");
             levelSelectButton = new Button(game, spriteBatch, new Rectangle(103, 375, 275, 70), blueButton, menuFontSmall, "Level Select");
-            instructionsButton = new Button(game, spriteBatch, new Rectangle(103, 475, 275, 70), yellowButton, menuFontSmall, "Instructions");
-            settingsButton = new Button(game, spriteBatch, new Rectangle(103, 575, 275, 70), yellowButton, menuFontBig, "Settings");
-            exitButton = new Button(game, spriteBatch, new Rectangle(103, 675, 275, 70), redButton, menuFontBig, "Exit");
+            settingsButton = new Button(game, spriteBatch, new Rectangle(103, 475, 275, 70), yellowButton, menuFontBig, "Settings");
+            exitButton = new Button(game, spriteBatch, new Rectangle(103, 575, 275, 70), redButton, menuFontBig, "Exit");
         }
 
         private void UnloadMainMenu()
@@ -109,16 +104,6 @@ namespace Blocker
             selector = null;
         }
 
-        private void LoadInstructions()
-        {
-            instructions = game.Content.Load<Texture2D>("Splash");
-        }
-
-        private void UnloadInstructions()
-        {
-            instructions = null;
-        }
-
         private void LoadSettings()
         {
             Texture2D yellowButton = game.Content.Load<Texture2D>("Buttons\\YellowButton");
@@ -128,13 +113,13 @@ namespace Blocker
             SpriteFont menuFontBig = game.Content.Load<SpriteFont>("Fonts\\Pericles36");
             SpriteFont menuFontSmall = game.Content.Load<SpriteFont>("Fonts\\Pericles28");
 
-            sound = new Label(game, spriteBatch, new Rectangle(103, 375, 275, 70), menuFontSmall, "Play with sound?");
+            sound = new Label(game, spriteBatch, new Rectangle(103, 275, 275, 70), menuFontSmall, "Play with sound?");
 
-            soundYes = new Button(game, spriteBatch, new Rectangle(103, 475, 122, 70), yellowButton, menuFontBig, "Yes");
+            soundYes = new Button(game, spriteBatch, new Rectangle(103, 375, 122, 70), yellowButton, menuFontBig, "Yes");
 
-            soundNo = new Button(game, spriteBatch, new Rectangle(255, 475, 122, 70), blueButton, menuFontBig, "No");
+            soundNo = new Button(game, spriteBatch, new Rectangle(255, 375, 122, 70), blueButton, menuFontBig, "No");
 
-            reset = new Button(game, spriteBatch, new Rectangle(103, 675, 275, 70), redButton, menuFontSmall, "Reset Levels");
+            reset = new Button(game, spriteBatch, new Rectangle(103, 575, 275, 70), redButton, menuFontSmall, "Reset Levels");
         }
 
         private void UnloadSettings()
@@ -179,7 +164,6 @@ namespace Blocker
                 game.Exit();
             playButton.Update(gameTime);
             levelSelectButton.Update(gameTime);
-            instructionsButton.Update(gameTime);
             settingsButton.Update(gameTime);
             exitButton.Update(gameTime);
 
@@ -197,13 +181,6 @@ namespace Blocker
                 state = MenuState.LevelSelect;
                 UnloadMainMenu();
                 LoadLevelSelect();
-            }
-
-            else if (instructionsButton.state == TouchButtonState.Clicked)
-            {
-                state = MenuState.Instructions;
-                UnloadMainMenu();
-                LoadInstructions();
             }
 
             else if (settingsButton.state == TouchButtonState.Clicked)
@@ -288,19 +265,12 @@ namespace Blocker
                 case MenuState.Main:
                     playButton.Draw(gameTime);
                     levelSelectButton.Draw(gameTime);
-                    instructionsButton.Draw(gameTime);
                     settingsButton.Draw(gameTime);
                     exitButton.Draw(gameTime);
                     break;
                 
                 case MenuState.LevelSelect:
                     selector.Draw(gameTime);
-                    break;
-
-                case MenuState.Instructions:
-                    spriteBatch.Begin();
-                    spriteBatch.Draw(instructions, Vector2.Zero, Color.White);
-                    spriteBatch.End();
                     break;
 
                 case MenuState.Settings:

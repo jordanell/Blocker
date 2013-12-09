@@ -65,7 +65,8 @@ namespace Blocker
         /// </summary>
         public override void Initialize()
         {
-            SetTextLocation();
+            if (font != null)
+                SetTextLocation();
 
             base.Initialize();
         }
@@ -117,12 +118,14 @@ namespace Blocker
             if (enabled)
             {
                 spriteBatch.Draw(texture, destination, Color.White);
-                spriteBatch.DrawString(font, text, textLocation, color);
+                if (font != null)
+                    spriteBatch.DrawString(font, text, textLocation, color);
             }
             else
             {
                 spriteBatch.Draw(texture, destination, Color.Silver);
-                spriteBatch.DrawString(font, text, textLocation, Color.Red);
+                if (font != null)
+                    spriteBatch.DrawString(font, text, textLocation, Color.Red);
             }
 
             spriteBatch.End();
