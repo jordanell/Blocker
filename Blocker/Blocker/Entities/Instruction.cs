@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using Microsoft.Xna.Framework.Input.Touch;
+using Microsoft.Devices;
 
 
 namespace Blocker.Entities
@@ -79,7 +80,13 @@ namespace Blocker.Entities
                 if (isXTouched(gs.Position))
                 {
                     Complete = true;
-                    SoundMixer.Instance(game).PlayEffect("Audio\\Button");
+                    if (SoundMixer.Instance(game).Muted)
+                    {
+                        VibrateController vibrate = VibrateController.Default;
+                        vibrate.Start(TimeSpan.FromMilliseconds(25));
+                    }
+                    else
+                        SoundMixer.Instance(game).PlayEffect("Audio\\Button");
                 }
             }
 

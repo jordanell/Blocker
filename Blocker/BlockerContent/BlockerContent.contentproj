@@ -369,13 +369,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Instructions\Inst4.png">
-      <Name>Inst4</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Instructions\Inst5.png">
       <Name>Inst5</Name>
       <Importer>TextureImporter</Importer>
@@ -423,6 +416,13 @@
       <Name>Matter</Name>
       <Importer>WavImporter</Importer>
       <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Instructions\Inst4.png">
+      <Name>Inst4</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />

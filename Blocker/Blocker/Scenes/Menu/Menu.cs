@@ -234,7 +234,11 @@ namespace Blocker
                 FileHandler.ResetLevels();
 
             if (soundYes.state == TouchButtonState.Clicked)
+            {
+                if (SoundMixer.Instance(game).Muted)
+                    SoundMixer.Instance(game).PlayEffectForce("Audio\\Button");
                 SoundMixer.Instance(game).Muted = false;
+            }
 
             if (soundNo.state == TouchButtonState.Clicked)
                 SoundMixer.Instance(game).Muted = true;

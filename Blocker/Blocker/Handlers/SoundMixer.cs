@@ -65,6 +65,22 @@ namespace Blocker
             effectInstance.Play();
         }
 
+        public void PlayEffectForce(string file)
+        {
+            // Load sound
+            SoundEffect effect;
+            effects.TryGetValue(file, out effect);
+            if (effect == null)
+            {
+                effects.Add(file, game.Content.Load<SoundEffect>(file));
+                effect = effects[file];
+            }
+
+            SoundEffectInstance effectInstance = effect.CreateInstance();
+            effectInstance.Volume = 1.0f;
+            effectInstance.Play();
+        }
+
         private int SoundEnabled()
         {
             using (IsolatedStorageFile gameStorage = IsolatedStorageFile.GetUserStoreForApplication())

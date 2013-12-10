@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using Microsoft.Xna.Framework.Input.Touch;
+using Microsoft.Devices;
 
 
 namespace Blocker
@@ -41,7 +42,6 @@ namespace Blocker
         private Vector2 textLocation;
 
         public TouchButtonState state = TouchButtonState.Up;
-        private int touchID = -1;
 
         public bool enabled = true;
 
@@ -99,13 +99,21 @@ namespace Blocker
             if (!enabled)
                 return;
 
+            state = TouchButtonState.Up;
+
             foreach (GestureSample gs in InputHandler.Instance.Taps())
             {
                 if (isButtonTouched(gs.Position))
                 {
                     InputHandler.Instance.Clear();
                     state = TouchButtonState.Clicked;
-                    SoundMixer.Instance(game).PlayEffect("Audio\\Button");
+                    if (SoundMixer.Instance(game).Muted)
+                    {
+                        VibrateController vibrate = VibrateController.Default;
+                        vibrate.Start(TimeSpan.FromMilliseconds(25));
+                    }
+                    else
+                        SoundMixer.Instance(game).PlayEffect("Audio\\Button");
                 }
             }
 
