@@ -13,20 +13,33 @@ using Microsoft.Xna.Framework.Media;
 namespace Blocker
 {
     /// <summary>
-    /// This is a game component that implements IUpdateable.
+    /// This is a game component that implements IUpdateable. Animation is used to play
+    /// a series of textures in order at a given speed to create the illusion of
+    /// animation.
     /// </summary>
     public class Animation : Microsoft.Xna.Framework.DrawableGameComponent
     {
+        // Xna components
         private Game game;
         private SpriteBatch spriteBatch;
 
+        // Block to animate (block animations are used for game components 
+        // which are part of the grid like space shit and matter)
         private Block block;
+
+        // Player to animate
         private Player player;
 
+        // The textures that will be used for animation
         private List<Texture2D> slides;
+
+        // Current texture number
         private int slide = 0;
 
+        // Frames to switch texture on
         private int speed;
+
+        // Frame count between texture switches
         private int count = 0;
 
         public Animation(Game game, SpriteBatch spriteBatch, Block block, List<Texture2D> slides, int speed)
@@ -37,6 +50,8 @@ namespace Blocker
             this.block = block;
             this.slides = slides;
             this.speed = speed;
+
+            Initialize();
         }
 
         public Animation(Game game, SpriteBatch spriteBatch, Player player, List<Texture2D> slides, int speed)
@@ -47,33 +62,29 @@ namespace Blocker
             this.player = player;
             this.slides = slides;
             this.speed = speed;
+
+            Initialize();
         }
 
         /// <summary>
         /// Allows the game component to perform any initialization it needs to before starting
-        /// to run.  This is where it can query for any required services and load content.
+        /// to run.  Set the start of the animation to a random number between 0 and the number of textures.
         /// </summary>
         public override void Initialize()
         {
             Random rnd = new Random();
-            count = rnd.Next(0, 4);
+            count = rnd.Next(0, slides.Count);
 
             base.Initialize();
         }
 
         /// <summary>
-        /// Allows the game component to update itself.
+        /// Allows the Animation to update itself.
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Update(GameTime gameTime)
         {
-            // TODO: Add your update code here
-
-            base.Update(gameTime);
-        }
-
-        public override void Draw(GameTime gameTime)
-        {
+            // Set the animation frame
             count++;
             if (count % speed == 0)
             {
@@ -83,11 +94,21 @@ namespace Blocker
                 count = 0;
             }
 
+            base.Update(gameTime);
+        }
+
+        /// <summary>
+        /// Allows the Animation to draw itself.
+        /// </summary>
+        /// <param name="gameTime">Provides a snapshot of timing values.</param>
+        public override void Draw(GameTime gameTime)
+        {
+            // Draw based on block or played animation
             spriteBatch.Begin();
             if (block != null)
-                spriteBatch.Draw(slides[slide], block.GetPosition(), Color.White);
+                spriteBatch.Draw(slides[slide], block.Position, Color.White);
             else if (player != null)
-                spriteBatch.Draw(slides[slide], player.GetPosition(), Color.White);
+                spriteBatch.Draw(slides[slide], player.Position, Color.White);
             spriteBatch.End();
 
             base.Draw(gameTime);

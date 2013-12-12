@@ -167,7 +167,7 @@ namespace Blocker
             settingsButton.Update(gameTime);
             exitButton.Update(gameTime);
 
-            if (playButton.state == TouchButtonState.Clicked)
+            if (playButton.State == TouchButtonState.Clicked)
             {
                 UnloadMainMenu();
                 LoadLevel = true;
@@ -176,21 +176,21 @@ namespace Blocker
                     LevelNumber = 25;
             }
 
-            else if (levelSelectButton.state == TouchButtonState.Clicked)
+            else if (levelSelectButton.State == TouchButtonState.Clicked)
             {
                 state = MenuState.LevelSelect;
                 UnloadMainMenu();
                 LoadLevelSelect();
             }
 
-            else if (settingsButton.state == TouchButtonState.Clicked)
+            else if (settingsButton.State == TouchButtonState.Clicked)
             {
                 state = MenuState.Settings;
                 UnloadMainMenu();
                 LoadSettings();
             }
 
-            else if (exitButton.state == TouchButtonState.Clicked)
+            else if (exitButton.State == TouchButtonState.Clicked)
                 game.Exit();
         }
 
@@ -230,17 +230,17 @@ namespace Blocker
             soundNo.Update(gameTime);
             reset.Update(gameTime);
 
-            if (reset.state == TouchButtonState.Clicked)
+            if (reset.State == TouchButtonState.Clicked)
                 FileHandler.ResetLevels();
 
-            if (soundYes.state == TouchButtonState.Clicked)
+            if (soundYes.State == TouchButtonState.Clicked)
             {
                 if (SoundMixer.Instance(game).Muted)
                     SoundMixer.Instance(game).PlayEffectForce("Audio\\Button");
                 SoundMixer.Instance(game).Muted = false;
             }
 
-            if (soundNo.state == TouchButtonState.Clicked)
+            if (soundNo.State == TouchButtonState.Clicked)
                 SoundMixer.Instance(game).Muted = true;
 
             // Monitor the back button

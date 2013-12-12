@@ -13,25 +13,21 @@ using Microsoft.Xna.Framework.Media;
 namespace Blocker
 {
     /// <summary>
-    /// This is a game component that implements IUpdateable.
+    /// This is a game component that implements IUpdateable. Exit is the space shuttle seen in
+    /// the game which the player must get to.
     /// </summary>
     public class Exit : Block
     {
-        private Game game;
-        private SpriteBatch spriteBatch;
-
         private Animation animation;
 
         public Exit(Game game, SpriteBatch spriteBatch, Texture2D texture, Rectangle position)
             : base(game, spriteBatch, texture, position)
         {
-            this.game = game;
-            this.spriteBatch = spriteBatch;
+            Initialize();
         }
 
         /// <summary>
-        /// Allows the game component to perform any initialization it needs to before starting
-        /// to run.  This is where it can query for any required services and load content.
+        /// Load the textures needed to create the animation for the space shuttle.
         /// </summary>
         public override void Initialize()
         {
@@ -53,24 +49,28 @@ namespace Blocker
             slides.Add(game.Content.Load<Texture2D>("Tiles\\Shuttle\\Shuttle3"));
             slides.Add(game.Content.Load<Texture2D>("Tiles\\Shuttle\\Shuttle2"));
 
+            // Create the animation
             animation = new Animation(game, spriteBatch, this, slides, 2);
-            animation.Initialize();
 
             base.Initialize();
         }
 
         /// <summary>
-        /// Allows the game component to update itself.
+        /// Allows the Exit to update itself.
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Update(GameTime gameTime)
         {
-            // TODO: Add your update code here
-
+            
         }
 
+        /// <summary>
+        /// Allows the Exit to draw itself.
+        /// </summary>
+        /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Draw(GameTime gameTime)
         {
+            // Draw the animation
             animation.Draw(gameTime);
         }
     }

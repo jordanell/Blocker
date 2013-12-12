@@ -21,6 +21,7 @@ namespace Blocker
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
 
+        // Manager to run the game
         private Manager manager;
 
         public BlockerGame()

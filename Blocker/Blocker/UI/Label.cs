@@ -13,14 +13,19 @@ using Microsoft.Xna.Framework.Media;
 namespace Blocker
 {
     /// <summary>
-    /// This is a game component that implements IUpdateable.
+    /// This is a game component that implements IUpdateable. Label is used to render
+    /// text to the screen.
     /// </summary>
     public class Label : Microsoft.Xna.Framework.DrawableGameComponent
     {
+        // XNA Components
         private Game game;
         private SpriteBatch spriteBatch;
 
+        // Font to be used
         private SpriteFont font;
+
+        // Text to be rendered
         private String text;
         public String Text
         {
@@ -32,16 +37,16 @@ namespace Blocker
             }
         }
 
-        private Color textColor = Color.White;
-        public Color TextColor
-        {
-            get { return textColor; }
-            set { textColor = value; }
-        }
+        // Color of the text
+        public Color TextColor { get; set; }
 
+        // Location of label box
         private Rectangle destination;
-        Vector2 textLocation;
 
+        // Location of text in label box
+        private Vector2 textLocation;
+
+        // Text alignment
         public enum LabelPosition { Left, Center }
         private LabelPosition textPosition = LabelPosition.Center;
         public LabelPosition TextPosition
@@ -62,13 +67,14 @@ namespace Blocker
             this.font = font;
             this.Text = text;
             this.destination = destination;
+            TextColor = Color.White;
 
             Initialize();
         }
 
         /// <summary>
         /// Allows the game component to perform any initialization it needs to before starting
-        /// to run.  This is where it can query for any required services and load content.
+        /// to run.  
         /// </summary>
         public override void Initialize()
         {
@@ -77,6 +83,9 @@ namespace Blocker
             base.Initialize();
         }
 
+        /// <summary>
+        /// Based on the position state of the text, position the text inside of the text box.
+        /// </summary>
         private void SetTextLocation()
         {
             if (textPosition == LabelPosition.Center)
@@ -97,16 +106,19 @@ namespace Blocker
         }
 
         /// <summary>
-        /// Allows the game component to update itself.
+        /// Allows the Label to update itself.
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Update(GameTime gameTime)
         {
-            // TODO: Add your update code here
 
             base.Update(gameTime);
         }
 
+        /// <summary>
+        /// Allows the Label to draw itself
+        /// </summary>
+        /// <param name="gameTime"></param>
         public override void Draw(GameTime gameTime)
         {
             spriteBatch.Begin();

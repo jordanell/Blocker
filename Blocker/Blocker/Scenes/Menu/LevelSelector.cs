@@ -77,7 +77,7 @@ namespace Blocker
                 for (int x = 0; x < 5; x++)
                 {
                     (selector[y])[x].Update(gameTime);
-                    if ((selector[y])[x].state == TouchButtonState.Clicked)
+                    if ((selector[y])[x].State == TouchButtonState.Clicked)
                     {
                         LoadLevel = true;
                         LevelNumber = ((y * 5) + x + 1);

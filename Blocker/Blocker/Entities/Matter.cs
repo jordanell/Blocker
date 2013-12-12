@@ -13,29 +13,32 @@ using Microsoft.Xna.Framework.Media;
 namespace Blocker
 {
     /// <summary>
-    /// This is a game component that implements IUpdateable.
+    /// This is a game component that implements IUpdateable. Matter represents the matter
+    /// than can be found inside of the levels of Block3r.
     /// </summary>
     public class Matter : Block
     {
-        public Color color;
+        // Color of the matter
+        public Color Color { get; set; }
 
+        // Animation of the matter block
         private Animation animation;
 
         public Matter(Game game, SpriteBatch spriteBatch, Texture2D texture, Rectangle position, Color color)
             : base(game, spriteBatch, texture, position)
         {
-            this.color = color;
+            this.Color = color;
         }
 
         /// <summary>
-        /// Allows the game component to perform any initialization it needs to before starting
-        /// to run.  This is where it can query for any required services and load content.
+        /// Load the textures for the different types of matter
         /// </summary>
         public override void Initialize()
         {
             List<Texture2D> slides = new List<Texture2D>();
 
-            if (color == Color.Red)
+            // Load red matter textures
+            if (Color == Color.Red)
             {
                 slides.Add(game.Content.Load<Texture2D>("Tiles\\Matter\\RedMatter\\RedMatter1"));
                 slides.Add(game.Content.Load<Texture2D>("Tiles\\Matter\\RedMatter\\RedMatter2"));
@@ -43,7 +46,8 @@ namespace Blocker
                 slides.Add(game.Content.Load<Texture2D>("Tiles\\Matter\\RedMatter\\RedMatter4"));
                 slides.Add(game.Content.Load<Texture2D>("Tiles\\Matter\\RedMatter\\RedMatter5"));
             }
-            else if (color == Color.Blue)
+            // Load blue matter textures
+            else if (Color == Color.Blue)
             {
                 slides.Add(game.Content.Load<Texture2D>("Tiles\\Matter\\BlueMatter\\BlueMatter1"));
                 slides.Add(game.Content.Load<Texture2D>("Tiles\\Matter\\BlueMatter\\BlueMatter2"));
@@ -52,23 +56,28 @@ namespace Blocker
                 slides.Add(game.Content.Load<Texture2D>("Tiles\\Matter\\BlueMatter\\BlueMatter5"));
             }
 
+            // Create animation
             animation = new Animation(game, spriteBatch, this, slides, 4);
-            animation.Initialize();
 
             base.Initialize();
         }
 
         /// <summary>
-        /// Allows the game component to update itself.
+        /// Allows the matter to update itself.
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Update(GameTime gameTime)
         {
-            // TODO: Add your update code here
+
         }
 
+        /// <summary>
+        /// Allows the matter to draw itself.
+        /// </summary>
+        /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Draw(GameTime gameTime)
         {
+            // Draw the animation
             animation.Draw(gameTime);
         }
     }

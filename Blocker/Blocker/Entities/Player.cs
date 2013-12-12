@@ -12,26 +12,40 @@ using Microsoft.Xna.Framework.Media;
 
 namespace Blocker
 {
-    public enum PlayerState { Idle, Moving }
     /// <summary>
-    /// This is a game component that implements IUpdateable.
+    /// The states a player object can be in.
+    /// </summary>
+    public enum PlayerState { Idle, Moving }
+
+    /// <summary>
+    /// This is a game component that implements IUpdateable. The player object is the main
+    /// character object in Block3r.
     /// </summary>
     public class Player : Microsoft.Xna.Framework.DrawableGameComponent
     {
+        // Xna components
         private Game game;
         private SpriteBatch spriteBatch;
 
-        private Rectangle position;
+        // Player position
+        public Rectangle Position { get; private set; }
 
+        // Animation for the idle state
         private Animation idle;
+
+        // Textures for moving in various directions
         private Texture2D up;
         private Texture2D down;
         private Texture2D left;
         private Texture2D right;
 
-        private PlayerState state = PlayerState.Idle;
+        // Player state
+        public PlayerState State { get; private set; }
+
+        // Movements to be applied
         private Movement movement;
 
+        // Reference to the level the player is in
         private Level level;
 
         public Player(Game game, SpriteBatch spriteBatch, Rectangle position, Level level)
@@ -39,16 +53,17 @@ namespace Blocker
         {
             this.game = game;
             this.spriteBatch = spriteBatch;
-            this.position = position;
+            this.Position = position;
             this.level = level;
+            this.State = PlayerState.Idle;
         }
 
         /// <summary>
-        /// Allows the game component to perform any initialization it needs to before starting
-        /// to run.  This is where it can query for any required services and load content.
+        /// Loads all textures needed for player animations and movements.
         /// </summary>
         public override void Initialize()
         {
+            // Load idle animation slides
             List<Texture2D> slides = new List<Texture2D>();
             slides.Add(game.Content.Load<Texture2D>("Player\\Idle\\Idle1"));
             slides.Add(game.Content.Load<Texture2D>("Player\\Idle\\Idle2"));
@@ -61,9 +76,10 @@ namespace Blocker
             slides.Add(game.Content.Load<Texture2D>("Player\\Idle\\Idle9"));
             slides.Add(game.Content.Load<Texture2D>("Player\\Idle\\Idle10"));
 
+            // Create idle animation
             idle = new Animation(game, spriteBatch, this, slides, 6);
-            idle.Initialize();
 
+            // Load all other directional textures
             up = game.Content.Load<Texture2D>("Player\\Up\\Astronaut");
             down = game.Content.Load<Texture2D>("Player\\Idle\\Idle1");
             right = game.Content.Load<Texture2D>("Player\\Right\\Astronaut");
@@ -72,34 +88,25 @@ namespace Blocker
             base.Initialize();
         }
 
-        public PlayerState Getstate()
-        {
-            return this.state;
-        }
-
-        public Rectangle GetPosition()
-        {
-            return this.position;
-        }
-
+        /// <summary>
+        /// Apply a movement to the player.
+        /// </summary>
+        /// <param name="movement"></param>
         public void Move(Movement movement)
         {
             this.movement = movement;
-            position = movement.GetEnd();
-            state = PlayerState.Moving;
+            Position = movement.End;
+            State = PlayerState.Moving;
         }
 
         /// <summary>
-        /// Allows the game component to update itself.
+        /// Allows the player to update itself.
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Update(GameTime gameTime)
         {
-            if (state == PlayerState.Idle)
-            {
-                // TODO
-            }
-            else if (state == PlayerState.Moving)
+            // Update movement if moving
+            if (State == PlayerState.Moving)
             {
                 movement.Update(gameTime);
 
@@ -110,16 +117,17 @@ namespace Blocker
                     {
                         if (level.Map[y, x] != null && level.Map[y, x].GetType() == typeof(Matter))
                         {
-                            if (movement.position.Intersects(level.Map[y, x].GetPosition()))
+                            // Add matter when colidding
+                            if (movement.Position.Intersects(level.Map[y, x].Position))
                                 level.AddMatterAt(x, y);
                         }
                     }
                 }
            
                 // Check if movement is complete
-                if (movement.complete)
+                if (movement.Complete)
                 {
-                    state = PlayerState.Idle;
+                    State = PlayerState.Idle;
                     movement = null;
                 }
             }
@@ -127,28 +135,35 @@ namespace Blocker
             base.Update(gameTime);
         }
 
+        /// <summary>
+        /// Allows the player to draw itself.
+        /// </summary>
+        /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Draw(GameTime gameTime)
         {
-            if(state == PlayerState.Idle)
+            // Draw idle animation when needed
+            if(State == PlayerState.Idle)
                 idle.Draw(gameTime);
-            else if (state == PlayerState.Moving)
+            // Draw a directional texture when needed
+            else if (State == PlayerState.Moving)
             {
                 spriteBatch.Begin();
-                switch(movement.direction)
+                // Draw texture based on movement direction
+                switch(movement.Direction)
                 {
                     case Direction.Up:
-                        spriteBatch.Draw(up, movement.position, Color.White);
+                        spriteBatch.Draw(up, movement.Position, Color.White);
                         break;
                     case Direction.Right:
-                        spriteBatch.Draw(right, new Rectangle(movement.position.X, movement.position.Y - 6, 40, 40), null, Color.White, MathHelper.ToRadians(30f),
+                        spriteBatch.Draw(right, new Rectangle(movement.Position.X, movement.Position.Y - 6, 40, 40), null, Color.White, MathHelper.ToRadians(30f),
                             Vector2.Zero, SpriteEffects.None, 0f);
                         break;
                     case Direction.Left:
-                        spriteBatch.Draw(left, new Rectangle(movement.position.X, movement.position.Y + 12, 40, 40), null, Color.White, MathHelper.ToRadians(-30f),
+                        spriteBatch.Draw(left, new Rectangle(movement.Position.X, movement.Position.Y + 12, 40, 40), null, Color.White, MathHelper.ToRadians(-30f),
                             Vector2.Zero, SpriteEffects.None, 0f);
                         break;
                     case Direction.Down:
-                        spriteBatch.Draw(down, movement.position, Color.White);
+                        spriteBatch.Draw(down, movement.Position, Color.White);
                         break;
                 }
                 spriteBatch.End();

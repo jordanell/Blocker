@@ -13,16 +13,20 @@ using Microsoft.Xna.Framework.Media;
 namespace Blocker
 {
     /// <summary>
-    /// This is a game component that implements IUpdateable.
+    /// This is a game component that implements IUpdateable. Block is the core component
+    /// of the level world. Block is an imoveable object.
     /// </summary>
     public class Block : Microsoft.Xna.Framework.DrawableGameComponent
     {
+        // Xna components
         protected Game game;
         protected SpriteBatch spriteBatch;
 
+        // Texture for block
         protected Texture2D blockTexture;
 
-        protected Rectangle position;
+        // Position of block
+        public Rectangle Position { get; protected set; }
 
         public Block(Game game, SpriteBatch spriteBatch, Texture2D texture, Rectangle position)
             : base(game)
@@ -30,40 +34,38 @@ namespace Blocker
             this.game = game;
             this.spriteBatch = spriteBatch;
             this.blockTexture = texture;
-            this.position = position;
+            this.Position = position;
         }
 
         /// <summary>
         /// Allows the game component to perform any initialization it needs to before starting
-        /// to run.  This is where it can query for any required services and load content.
+        /// to run.
         /// </summary>
         public override void Initialize()
         {
-            // TODO: Add your initialization code here
 
             base.Initialize();
         }
 
-        public Rectangle GetPosition()
-        {
-            return position;
-        }
-
         /// <summary>
-        /// Allows the game component to update itself.
+        /// Allows the block to update itself.
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Update(GameTime gameTime)
         {
-            // TODO: Add your update code here
+
 
             base.Update(gameTime);
         }
 
+        /// <summary>
+        /// Allows the block to draw itself
+        /// </summary>
+        /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Draw(GameTime gameTime)
         {
             spriteBatch.Begin();
-            spriteBatch.Draw(blockTexture, position, Color.White);
+            spriteBatch.Draw(blockTexture, Position, Color.White);
             spriteBatch.End();
 
             base.Draw(gameTime);

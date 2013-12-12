@@ -241,13 +241,13 @@ namespace Blocker
             }
 
             state = LevelState.Idle;
-            if (player.Getstate() == PlayerState.Moving)
+            if (player.State == PlayerState.Moving)
                 state = LevelState.Moving;
 
             // Check for win condition
             if (state == LevelState.Idle)
             {
-                if (player.GetPosition().Intersects(exit.GetPosition()))
+                if (player.Position.Intersects(exit.Position))
                     complete = true;
             }
 
@@ -307,7 +307,7 @@ namespace Blocker
         private void ProcessPlayerMove(Direction direction)
         {
             Vector2 origin = new Vector2(
-                player.GetPosition().X / blockWidth, (player.GetPosition().Y / blockHeight) - 2);
+                player.Position.X / blockWidth, (player.Position.Y / blockHeight) - 2);
             Vector2 destination = GetDestination(origin, direction);
 
             if (destination.X != -1 && destination != origin && HUD.Fuel > 0)
@@ -361,7 +361,7 @@ namespace Blocker
 
         private void ProcessPush(Vector2 position)
         {
-            Vector2 delta = new Vector2(position.X - player.GetPosition().X, position.Y - player.GetPosition().Y);
+            Vector2 delta = new Vector2(position.X - player.Position.X, position.Y - player.Position.Y);
 
             Direction direction = GetDirection(delta);
             Vector2 origin = AcquireTarget(delta, direction);
@@ -369,7 +369,7 @@ namespace Blocker
 
             if (target.GetType() == typeof(MoveableBlock))
             {
-                Color color = ((MoveableBlock)target).color;
+                Color color = ((MoveableBlock)target).Color;
                 if (color == Color.Red)
                 {
                     Movement move = GetBlockMovement(origin, direction);
@@ -378,9 +378,9 @@ namespace Blocker
                         ((MoveableBlock)target).Move(move);
                         HUD.DecreaseRedMatter();
                         map[(int)origin.Y, (int)origin.X] = null;
-                        Vector2 dest = GridIndexOf(new Vector2(move.end.X, move.end.Y));
+                        Vector2 dest = GridIndexOf(new Vector2(move.End.X, move.End.Y));
                         map[(int)dest.Y, (int)dest.X] = target;
-                        GenerateLightning(direction, new Vector2(move.start.X, move.start.Y), Color.Red);
+                        GenerateLightning(direction, new Vector2(move.Start.X, move.Start.Y), Color.Red);
                         SoundMixer.Instance(game).PlayEffect("Audio\\Shoot");
                     }
                 }
@@ -392,9 +392,9 @@ namespace Blocker
                         ((MoveableBlock)target).Move(move);
                         HUD.DecreaseBlueMatter();
                         map[(int)origin.Y, (int)origin.X] = null;
-                        Vector2 dest = GridIndexOf(new Vector2(move.end.X, move.end.Y));
+                        Vector2 dest = GridIndexOf(new Vector2(move.End.X, move.End.Y));
                         map[(int)dest.Y, (int)dest.X] = target;
-                        GenerateLightning(direction, new Vector2(move.start.X, move.start.Y), Color.SkyBlue);
+                        GenerateLightning(direction, new Vector2(move.Start.X, move.Start.Y), Color.SkyBlue);
                         SoundMixer.Instance(game).PlayEffect("Audio\\Shoot");
                     }
 
@@ -409,25 +409,25 @@ namespace Blocker
             switch (direction)
             {
                 case Direction.Up:
-                    source.X = player.GetPosition().X + (blockWidth / 2);
-                    source.Y = player.GetPosition().Y;
+                    source.X = player.Position.X + (blockWidth / 2);
+                    source.Y = player.Position.Y;
                     dest.X += blockWidth / 2;
                     dest.Y += blockHeight; 
                     break;
                 case Direction.Down:
-                    source.X = player.GetPosition().X + (blockWidth / 2);
-                    source.Y = player.GetPosition().Y + (blockHeight);
+                    source.X = player.Position.X + (blockWidth / 2);
+                    source.Y = player.Position.Y + (blockHeight);
                     dest.X += blockWidth / 2;
                     break;
                 case Direction.Left:
-                    source.X = player.GetPosition().X;
-                    source.Y = player.GetPosition().Y + (blockHeight / 2);
+                    source.X = player.Position.X;
+                    source.Y = player.Position.Y + (blockHeight / 2);
                     dest.X += blockWidth;
                     dest.Y += blockHeight / 2; 
                     break;
                 case Direction.Right:
-                    source.X = player.GetPosition().X + (blockWidth);
-                    source.Y = player.GetPosition().Y + (blockHeight / 2);
+                    source.X = player.Position.X + (blockWidth);
+                    source.Y = player.Position.Y + (blockHeight / 2);
                     dest.Y += blockHeight / 2; 
                     break;
             }
@@ -445,7 +445,7 @@ namespace Blocker
         private Vector2 AcquireTarget(Vector2 delta, Direction direction)
         {
             Vector2 origin = new Vector2(
-                player.GetPosition().X / blockWidth, (player.GetPosition().Y / blockHeight) - 2);
+                player.Position.X / blockWidth, (player.Position.Y / blockHeight) - 2);
 
             Vector2 target = new Vector2(-1, -1);
             switch (direction)
@@ -537,9 +537,9 @@ namespace Blocker
         public void AddMatterAt(int x, int y)
         {
             Matter matter = (Matter)map[y, x];
-            if (matter.color == Color.Red)
+            if (matter.Color == Color.Red)
                 HUD.AddRedMatter();
-            else if (matter.color == Color.Blue)
+            else if (matter.Color == Color.Blue)
                 HUD.AddBlueMatter();
 
             // Delete matter from map

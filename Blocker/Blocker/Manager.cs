@@ -15,22 +15,31 @@ using Blocker.Handlers;
 namespace Blocker
 {
     /// <summary>
-    /// This is a game component that implements IUpdateable.
+    /// This is a game component that implements IUpdateable. Manager is used to control the
+    /// flow of the game between different scenes.
     /// </summary>
     public class Manager : Microsoft.Xna.Framework.DrawableGameComponent
     {
+        // XNA Components
         private Game game;
         private SpriteBatch spriteBatch;
 
+        // Splash screen scene
         private SplashScreen splash;
 
+        // Background to be used for whole game
         private Background background;
 
+        // Main menu scene
         private Menu menu;
+
+        // Level scene
         private Level level;
 
+        // End of the game scene
         private EndGame endGame;
 
+        // The states that the manager can be in
         private enum ManagerState { Splash, Menu, Level, EndGame }
         private ManagerState state = ManagerState.Splash;
 
@@ -45,32 +54,33 @@ namespace Blocker
 
         /// <summary>
         /// Allows the Manager component to perform initialization it needs to before starting
-        /// to run.  This is where it can query for any required services and load content.
+        /// to run. 
         /// </summary>
         public override void Initialize()
         {
             // Check for needed files
             FileHandler.CheckFiles();
 
-            // Create the splash screen
+            // Create the splash screen scene
             splash = new SplashScreen(game, spriteBatch, 3000);
 
             // Create the background entity
             background = new Background(game, spriteBatch);
 
-            // Create the menu entity
+            // Create the menu scene
             menu = new Menu(game, spriteBatch);
 
             base.Initialize();
         }
 
         /// <summary>
-        /// Allows the game component to update itself.
+        /// Allows the Manager to update itself. Updates are dependant on the 
+        /// current state of the Manager
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Update(GameTime gameTime)
         {
-            // Update the background
+            // Update the background when not in splash screen
             if (state != ManagerState.Splash)
                 background.Update(gameTime);
 
@@ -79,6 +89,7 @@ namespace Blocker
             {
                 splash.Update(gameTime);
 
+                // Go to main menu
                 if (splash.Complete)
                 {
                     menu = new Menu(game, spriteBatch);
@@ -91,6 +102,7 @@ namespace Blocker
             {
                 menu.Update(gameTime);
 
+                // Go to level selected
                 if (menu.LoadLevel)
                 {
                     level = new Level(game, spriteBatch, menu.LevelNumber);
@@ -104,6 +116,7 @@ namespace Blocker
             {
                 level.Update(gameTime);
 
+                // Go to main menu
                 if (level.Quit)
                 {
                     menu = new Menu(game, spriteBatch);
@@ -112,15 +125,15 @@ namespace Blocker
                     return;
                 }
 
+                // Go to next level
                 else if (level.Complete)
-                {
                     LevelComplete();
-                }
             }
             else if (state == ManagerState.EndGame)
             {
                 endGame.Update(gameTime);
 
+                // Go to main menu
                 if (endGame.Complete)
                 {
                     menu = new Menu(game, spriteBatch);
@@ -133,11 +146,17 @@ namespace Blocker
             base.Update(gameTime);
         }
 
+        /// <summary>
+        /// Performs a transistion from level to level. Save the highest level if needed and
+        /// move onto next level or end game scene.
+        /// </summary>
         private void LevelComplete()
         {
+            // Save if highest level has been obtained
             if (level.LevelNumber > FileHandler.TopLevel())
                 FileHandler.Save(level.LevelNumber);
 
+            // Go to end game scene
             if (level.LevelNumber == 25)
             {
                 level = null;
@@ -145,6 +164,7 @@ namespace Blocker
                 state = ManagerState.EndGame;
                 SoundMixer.Instance(game).PlayEffect("Audio\\Winner");
             }
+            // Go to next level
             else
             {
                 int nextLevel = level.LevelNumber + 1;
@@ -156,12 +176,12 @@ namespace Blocker
         }
 
         /// <summary>
-        /// 
+        /// Draw based on the current state of the Manager.
         /// </summary>
         /// <param name="gameTime"></param>
         public override void Draw(GameTime gameTime)
         {
-            // Draw the background
+            // Draw the background if needed
             if (state != ManagerState.Splash)
                 background.Draw(gameTime);
 
