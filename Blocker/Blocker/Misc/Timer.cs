@@ -13,12 +13,15 @@ using Microsoft.Xna.Framework.Media;
 namespace Blocker
 {
     /// <summary>
-    /// This is a game component that implements IUpdateable.
+    /// This is a game component that implements IUpdateable. The timer is used for creating
+    /// intervals of time to perform some task or wait.
     /// </summary>
     public class Timer : Microsoft.Xna.Framework.GameComponent
     {
+        // Xna components
         private Game game;
 
+        // Time components
         private int start = -1;
         private int current;
         private int duration;
@@ -37,22 +40,27 @@ namespace Blocker
         /// </summary>
         public override void Initialize()
         {
-            // TODO: Add your initialization code here
 
             base.Initialize();
         }
 
+        /// <summary>
+        /// Returns true is the time is done.
+        /// </summary>
+        /// <returns>Bool to return if timer is done.</returns>
         public bool IsDone()
         {
             return (current > end);
         }
 
         /// <summary>
-        /// Allows the game component to update itself.
+        /// Allows the timer to update itself.
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Update(GameTime gameTime)
         {
+            // If the timer has not been set up yet on first
+            // update call
             if (start == -1)
             {
                 start = (int)gameTime.TotalGameTime.TotalMilliseconds;
@@ -61,9 +69,11 @@ namespace Blocker
                 return;
             }
 
+            // Check to see if the time is done
             if (IsDone())
                 return;
             
+            // Update the clock
             current += gameTime.ElapsedGameTime.Milliseconds;
 
             base.Update(gameTime);

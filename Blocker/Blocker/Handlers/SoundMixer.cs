@@ -1,3 +1,4 @@
+using Blocker.Handlers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using System;
@@ -8,24 +9,17 @@ using System.Text;
 
 namespace Blocker
 {
+    /// <summary>
+    /// SoundMixer is a singleton class which is used to play any type of
+    /// audio in Block3r.
+    /// </summary>
     class SoundMixer
     {
+        // XNA componenets
         private Game game;
+
+        // SoundMixer is a singleton
         private static SoundMixer instance;
-
-        private Dictionary<string, SoundEffect> effects;
-
-        private bool muted;
-        public bool Muted
-        {
-            get { return muted; }
-            set 
-            {
-                muted = value;
-                SaveSettings(value);
-            }
-        }
-
         public static SoundMixer Instance(Game game)
         {
             if (instance == null)
@@ -33,9 +27,30 @@ namespace Blocker
             return instance;
         }
 
+        // Current audio loaded
+        private Dictionary<string, SoundEffect> effects;
+
+        // Muted flag
+        private bool muted;
+        public bool Muted
+        {
+            get { return muted; }
+            set 
+            {
+                muted = value;
+                FileHandler.SaveSettings(value);
+            }
+        }
+
+        /// <summary>
+        /// Since SoundMixer is a singleton, this constructor is private. This constructor
+        /// checks for audio settings for muted options.
+        /// </summary>
+        /// <param name="game"></param>
         private SoundMixer(Game game)
         {
-            int soundSetting = SoundEnabled();
+            // Check for muted
+            int soundSetting = FileHandler.SoundEnabled();
             if (soundSetting == 0)
                 muted = false;
             if (soundSetting == 1)
@@ -43,15 +58,21 @@ namespace Blocker
 
             this.game = game;
 
+            // Initialize the audio hash
             effects = new Dictionary<string, SoundEffect>();
         }
 
+        /// <summary>
+        /// Play an audio sound based on the given file name.
+        /// </summary>
+        /// <param name="file">The given audio file to play.</param>
         public void PlayEffect(string file)
         {
+            // Don't do anything when muted
             if (muted)
                 return;
 
-            // Load sound
+            // Load sound into audio hash if not already present
             SoundEffect effect;
             effects.TryGetValue(file, out effect);
             if (effect == null)
@@ -60,14 +81,19 @@ namespace Blocker
                 effect = effects[file];
             }
 
+            // Play sound
             SoundEffectInstance effectInstance = effect.CreateInstance();
             effectInstance.Volume = 1.0f;
             effectInstance.Play();
         }
 
+        /// <summary>
+        /// Play an audio sound regardless of mute setting.
+        /// </summary>
+        /// <param name="file">The given audio file to play.</param>
         public void PlayEffectForce(string file)
         {
-            // Load sound
+            // Load sound into audio hash if not already present
             SoundEffect effect;
             effects.TryGetValue(file, out effect);
             if (effect == null)
@@ -76,50 +102,10 @@ namespace Blocker
                 effect = effects[file];
             }
 
+            // Play sound
             SoundEffectInstance effectInstance = effect.CreateInstance();
             effectInstance.Volume = 1.0f;
             effectInstance.Play();
         }
-
-        private int SoundEnabled()
-        {
-            using (IsolatedStorageFile gameStorage = IsolatedStorageFile.GetUserStoreForApplication())
-            {
-                if (gameStorage.FileExists("settings"))
-                {
-                    using (IsolatedStorageFileStream fs = gameStorage.OpenFile("settings", System.IO.FileMode.Open))
-                    {
-                        if (fs != null)
-                        {
-                            byte[] bytes = new byte[10];
-                            int x = fs.Read(bytes, 0, 10);
-                            return System.BitConverter.ToInt32(bytes, 0);
-                        }
-                    }
-                }
-            }
-            return -1;
-        }
-
-        private void SaveSettings(bool muted)
-        {
-            IsolatedStorageFile gameStorage = IsolatedStorageFile.GetUserStoreForApplication();
-            IsolatedStorageFileStream fs = null;
-
-            using (fs = gameStorage.CreateFile("settings"))
-            {
-                if (fs != null)
-                {
-                    byte[] bytes;
-                    if (muted)
-                        bytes = System.BitConverter.GetBytes(1);
-                    else
-                        bytes = System.BitConverter.GetBytes(0);
-                    fs.Write(bytes, 0, bytes.Length);
-                }
-            }
-        }
-
-
     }
 }

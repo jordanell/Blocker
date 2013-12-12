@@ -13,18 +13,23 @@ using Microsoft.Xna.Framework.Media;
 namespace Blocker.ParticleSystem
 {
     /// <summary>
-    /// This is a game component that implements IUpdateable.
+    /// This is a game component that implements IUpdateable. The lightning bolt object 
+    /// is a series of lines which are used to create a lightning bolt effect.
     /// </summary>
     public class LightningBolt : Microsoft.Xna.Framework.DrawableGameComponent
     {
+        // Xna components
         private Game game;
         private SpriteBatch spriteBatch;
 
+        // Transparency of the bolt to be used for death animation
         private float alpha;
         private float fadeOutRate;
 
+        // Complete flag
         public bool Complete { get { return alpha <= 0; } }
 
+        // Lines that make up lightning bolt
         private List<Line> segments = new List<Line>();
 
         public LightningBolt(Game game, SpriteBatch spriteBatch, Vector2 source, Vector2 dest, Color color)
@@ -33,6 +38,7 @@ namespace Blocker.ParticleSystem
             this.game = game;
             this.spriteBatch = spriteBatch;
 
+            // Call to create the lines for the bolt
             segments = CreateBolt(source, dest, 4, color);
 
             alpha = 1f;
@@ -47,11 +53,18 @@ namespace Blocker.ParticleSystem
         /// </summary>
         public override void Initialize()
         {
-            // TODO: Add your initialization code here
 
             base.Initialize();
         }
 
+        /// <summary>
+        /// Creates a list of line that become a lightning bolt.
+        /// </summary>
+        /// <param name="source">The start of the lightning bolt.</param>
+        /// <param name="dest">The end of the lightning bolt.</param>
+        /// <param name="thickness">The thickness of the lightning bolt.</param>
+        /// <param name="color">The color of the lightning bolt.</param>
+        /// <returns>The line segments of the lightning bolt.</returns>
         private List<Line> CreateBolt(Vector2 source, Vector2 dest, float thickness, Color color)
         {
             var results = new List<Line>();
@@ -78,10 +91,10 @@ namespace Blocker.ParticleSystem
             {
                 float pos = positions[i];
 
-                // used to prevent sharp angles by ensuring very close positions also have small perpendicular variation.
+                // Used to prevent sharp angles by ensuring very close positions also have small perpendicular variation.
                 float scale = (length * Jaggedness) * (pos - positions[i - 1]);
 
-                // defines an envelope. Points near the middle of the bolt can be further from the central line.
+                // Defines an envelope. Points near the middle of the bolt can be further from the central line.
                 float envelope = pos > 0.95f ? 20 * (1 - pos) : 1;
 
                 float displacement = r.Next((int)-Sway, (int)Sway);
@@ -100,21 +113,30 @@ namespace Blocker.ParticleSystem
         }
 
         /// <summary>
-        /// Allows the game component to update itself.
+        /// Allows the lightning bolt to update itself.
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Update(GameTime gameTime)
         {
+            // Update alhpa for death
             alpha -= fadeOutRate;
 
             base.Update(gameTime);
         }
 
+        /// <summary>
+        /// Allows the lightning bolt to draw itself.
+        /// </summary>
+        /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Draw(GameTime gameTime)
         {
+            // Don't draw when dead
             if (Complete)
                 return;
 
+            // Draw each line segment
+            // We need to change the draw mode so we have to begin spritebatch
+            // here instead of in the line itself.
             foreach (Line segment in segments)
             {
                 spriteBatch.Begin(SpriteSortMode.Texture, BlendState.Additive);
