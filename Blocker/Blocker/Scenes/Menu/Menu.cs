@@ -272,7 +272,7 @@ namespace Blocker
             {
                 // Force a sound to play when sound gets turned on intially
                 if (SoundMixer.Instance(game).Muted)
-                    SoundMixer.Instance(game).PlayEffectForce("Audio\\Button");
+                    SoundMixer.Instance(game).PlayButton(true);
                 SoundMixer.Instance(game).Muted = false;
             }
 

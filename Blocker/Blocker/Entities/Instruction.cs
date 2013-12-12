@@ -111,7 +111,7 @@ namespace Blocker.Entities
                         vibrate.Start(TimeSpan.FromMilliseconds(25));
                     }
                     else
-                        SoundMixer.Instance(game).PlayEffect("Audio\\Button");
+                        SoundMixer.Instance(game).PlayButton(false);
                 }
             }
 

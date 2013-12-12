@@ -63,36 +63,69 @@ namespace Blocker
         }
 
         /// <summary>
-        /// Play an audio sound based on the given file name.
+        /// Plays the sound effect of a button.
         /// </summary>
-        /// <param name="file">The given audio file to play.</param>
-        public void PlayEffect(string file)
+        /// <param name="force">Force sound to play even if muted.</param>
+        public void PlayButton(bool force)
         {
-            // Don't do anything when muted
-            if (muted)
-                return;
-
-            // Load sound into audio hash if not already present
-            SoundEffect effect;
-            effects.TryGetValue(file, out effect);
-            if (effect == null)
-            {
-                effects.Add(file, game.Content.Load<SoundEffect>(file));
-                effect = effects[file];
-            }
-
-            // Play sound
-            SoundEffectInstance effectInstance = effect.CreateInstance();
-            effectInstance.Volume = 1.0f;
-            effectInstance.Play();
+            PlayEffect(force, "Audio\\Button");
         }
 
         /// <summary>
-        /// Play an audio sound regardless of mute setting.
+        /// Plays the sound effect of a button.
+        /// </summary>
+        /// <param name="force">Force sound to play even if muted.</param>
+        public void PlayMove(bool force)
+        {
+            PlayEffect(force, "Audio\\Move");
+        }
+
+        /// <summary>
+        /// Plays the sound effect of a shot.
+        /// </summary>
+        /// <param name="force">Force sound to play even if muted.</param>
+        public void PlayShoot(bool force)
+        {
+            PlayEffect(force, "Audio\\Shoot");
+        }
+
+        /// <summary>
+        /// Plays the sound effect of a matter collection.
+        /// </summary>
+        /// <param name="force">Force sound to play even if muted.</param>
+        public void PlayMatter(bool force)
+        {
+            PlayEffect(force, "Audio\\Matter");
+        }
+
+        /// <summary>
+        /// Plays the sound effect of level complete.
+        /// </summary>
+        /// <param name="force">Force sound to play even if muted.</param>
+        public void PlayLevelComplete(bool force)
+        {
+            PlayEffect(force, "Audio\\LevelComplete");
+        }
+
+        /// <summary>
+        /// Plays the sound effect of game beaten.
+        /// </summary>
+        /// <param name="force">Force sound to play even if muted.</param>
+        public void PlayWinner(bool force)
+        {
+            PlayEffect(force, "Audio\\Winner");
+        }
+
+        /// <summary>
+        /// Play an audio sound based on the given file name.
         /// </summary>
         /// <param name="file">The given audio file to play.</param>
-        public void PlayEffectForce(string file)
+        private void PlayEffect(bool force, string file)
         {
+            // Don't do anything when muted and not forced
+            if (!force && muted)
+                return;
+
             // Load sound into audio hash if not already present
             SoundEffect effect;
             effects.TryGetValue(file, out effect);

@@ -380,7 +380,7 @@ namespace Blocker
 
                 // Update the level state and play sound
                 state = LevelState.Moving;
-                SoundMixer.Instance(game).PlayEffect("Audio\\Move");
+                SoundMixer.Instance(game).PlayMove(false);
             }
         }
 
@@ -486,7 +486,7 @@ namespace Blocker
             Vector2 dest = GridIndexOf(new Vector2(move.End.X, move.End.Y));
             map[(int)dest.Y, (int)dest.X] = target;
             GenerateLightning(move.Direction, new Vector2(move.Start.X, move.Start.Y), color);
-            SoundMixer.Instance(game).PlayEffect("Audio\\Shoot");
+            SoundMixer.Instance(game).PlayShoot(false);
         }
 
         /// <summary>
@@ -698,7 +698,7 @@ namespace Blocker
             map[y, x] = null;
 
             // Play matter sound
-            SoundMixer.Instance(game).PlayEffect("Audio\\Matter");
+            SoundMixer.Instance(game).PlayMatter(false);
         }
 
         /// <summary>
