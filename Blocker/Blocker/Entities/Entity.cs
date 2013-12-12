@@ -8,29 +8,33 @@ using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
-using Blocker.Entities;
 
 
-namespace Blocker
+namespace Blocker.Entities
 {
     /// <summary>
-    /// This is a game component that implements IUpdateable. Block is the core component
-    /// of the level world. Block is an imoveable object.
+    /// Entity is the base class needed for game objects.
     /// </summary>
-    public class Block : Entity
+    public class Entity : Microsoft.Xna.Framework.DrawableGameComponent
     {
-        // Texture for block
-        protected Texture2D blockTexture;
+        // Xna components
+        protected Game game;
+        protected SpriteBatch spriteBatch;
 
-        public Block(Game game, SpriteBatch spriteBatch, Texture2D texture, Rectangle position)
-            : base(game, spriteBatch, position)
+        // Position of entity
+        public Rectangle Position { get; protected set; }
+
+        public Entity(Game game, SpriteBatch spriteBatch, Rectangle position)
+            : base(game)
         {
-            this.blockTexture = texture;
+            this.game = game;
+            this.spriteBatch = spriteBatch;
+            this.Position = position;
         }
 
         /// <summary>
         /// Allows the game component to perform any initialization it needs to before starting
-        /// to run.
+        /// to run.  This is where it can query for any required services and load content.
         /// </summary>
         public override void Initialize()
         {
@@ -39,26 +43,22 @@ namespace Blocker
         }
 
         /// <summary>
-        /// Allows the block to update itself.
+        /// Allows the entity to update itself.
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Update(GameTime gameTime)
         {
 
-
             base.Update(gameTime);
         }
 
         /// <summary>
-        /// Allows the block to draw itself
+        /// Allows the entity to draw itself.
         /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
+        /// <param name="gameTime"></param>
         public override void Draw(GameTime gameTime)
         {
-            spriteBatch.Begin();
-            spriteBatch.Draw(blockTexture, Position, Color.White);
-            spriteBatch.End();
-
+            
             base.Draw(gameTime);
         }
     }

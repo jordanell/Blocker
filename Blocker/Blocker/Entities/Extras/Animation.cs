@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+using Blocker.Entities;
 
 
 namespace Blocker
@@ -23,12 +24,9 @@ namespace Blocker
         private Game game;
         private SpriteBatch spriteBatch;
 
-        // Block to animate (block animations are used for game components 
+        // Entity to animate (block animations are used for game components 
         // which are part of the grid like space shit and matter)
-        private Block block;
-
-        // Player to animate
-        private Player player;
+        private Entity entity;
 
         // The textures that will be used for animation
         private List<Texture2D> slides;
@@ -42,24 +40,12 @@ namespace Blocker
         // Frame count between texture switches
         private int count = 0;
 
-        public Animation(Game game, SpriteBatch spriteBatch, Block block, List<Texture2D> slides, int speed)
+        public Animation(Game game, SpriteBatch spriteBatch, Entity entity, List<Texture2D> slides, int speed)
             : base(game)
         {
             this.game = game;
             this.spriteBatch = spriteBatch;
-            this.block = block;
-            this.slides = slides;
-            this.speed = speed;
-
-            Initialize();
-        }
-
-        public Animation(Game game, SpriteBatch spriteBatch, Player player, List<Texture2D> slides, int speed)
-            : base(game)
-        {
-            this.game = game;
-            this.spriteBatch = spriteBatch;
-            this.player = player;
+            this.entity = entity;
             this.slides = slides;
             this.speed = speed;
 
@@ -105,10 +91,8 @@ namespace Blocker
         {
             // Draw based on block or played animation
             spriteBatch.Begin();
-            if (block != null)
-                spriteBatch.Draw(slides[slide], block.Position, Color.White);
-            else if (player != null)
-                spriteBatch.Draw(slides[slide], player.Position, Color.White);
+            if (entity != null)
+                spriteBatch.Draw(slides[slide], entity.Position, Color.White);
             spriteBatch.End();
 
             base.Draw(gameTime);

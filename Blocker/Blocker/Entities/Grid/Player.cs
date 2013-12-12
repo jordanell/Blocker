@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+using Blocker.Entities;
 
 
 namespace Blocker
@@ -21,15 +22,8 @@ namespace Blocker
     /// This is a game component that implements IUpdateable. The player object is the main
     /// character object in Block3r.
     /// </summary>
-    public class Player : Microsoft.Xna.Framework.DrawableGameComponent
+    public class Player : Entity
     {
-        // Xna components
-        private Game game;
-        private SpriteBatch spriteBatch;
-
-        // Player position
-        public Rectangle Position { get; private set; }
-
         // Animation for the idle state
         private Animation idle;
 
@@ -49,11 +43,8 @@ namespace Blocker
         private Level level;
 
         public Player(Game game, SpriteBatch spriteBatch, Rectangle position, Level level)
-            : base(game)
+            : base(game, spriteBatch, position)
         {
-            this.game = game;
-            this.spriteBatch = spriteBatch;
-            this.Position = position;
             this.level = level;
             this.State = PlayerState.Idle;
 
