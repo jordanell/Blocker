@@ -56,6 +56,8 @@ namespace Blocker
             this.Position = position;
             this.level = level;
             this.State = PlayerState.Idle;
+
+            Initialize();
         }
 
         /// <summary>
@@ -131,6 +133,10 @@ namespace Blocker
                     movement = null;
                 }
             }
+
+            // Update idle animation
+            else if(State == PlayerState.Idle)
+                idle.Update(gameTime);
 
             base.Update(gameTime);
         }

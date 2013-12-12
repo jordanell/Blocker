@@ -61,7 +61,8 @@ namespace Blocker
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Update(GameTime gameTime)
         {
-            
+            // Update animation
+            animation.Update(gameTime);
         }
 
         /// <summary>

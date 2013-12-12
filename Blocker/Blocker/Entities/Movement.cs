@@ -59,6 +59,8 @@ namespace Blocker
             this.Start = start;
             this.End = end;
             this.Position = start;
+
+            Initialize();
         }
 
         /// <summary>

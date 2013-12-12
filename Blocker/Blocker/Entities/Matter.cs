@@ -28,6 +28,8 @@ namespace Blocker
             : base(game, spriteBatch, texture, position)
         {
             this.Color = color;
+
+            Initialize();
         }
 
         /// <summary>
@@ -68,7 +70,8 @@ namespace Blocker
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Update(GameTime gameTime)
         {
-
+            // Update the animation
+            animation.Update(gameTime);
         }
 
         /// <summary>

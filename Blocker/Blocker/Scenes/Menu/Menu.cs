@@ -16,14 +16,19 @@ using Blocker.Handlers;
 namespace Blocker
 {
     /// <summary>
-    /// This is a game component that implements IUpdateable.
+    /// This is a game component that implements IUpdateable. The menu object is the 
+    /// main menu as part of the Block3r game.
     /// </summary>
     public class Menu : Microsoft.Xna.Framework.DrawableGameComponent
     {
+        // Xna components
         private Game game;
         private SpriteBatch spriteBatch;
 
-        private enum MenuState { Main, LevelSelect, Instructions, Settings };
+        // The possible states the menu can be in
+        private enum MenuState { Main, LevelSelect, Settings };
+
+        // The menu state
         private MenuState state = MenuState.Main;
 
         // Title logo
@@ -58,8 +63,7 @@ namespace Blocker
         }
 
         /// <summary>
-        /// Allows the game component to perform any initialization it needs to before starting
-        /// to run.  This is where it can query for any required services and load content.
+        /// Load the logo texture and initialize the main menu.
         /// </summary>
         public override void Initialize()
         {
@@ -70,21 +74,30 @@ namespace Blocker
             base.Initialize();
         }
 
+        /// <summary>
+        /// Loads all components needed to display the main menu
+        /// </summary>
         private void LoadMainMenu()
         {
+            // Load textures needed
             Texture2D yellowButton = game.Content.Load<Texture2D>("Buttons\\YellowButton");
             Texture2D blueButton = game.Content.Load<Texture2D>("Buttons\\BlueButton");
             Texture2D redButton = game.Content.Load<Texture2D>("Buttons\\RedButton");
 
+            // Load fonts needed
             SpriteFont menuFontBig = game.Content.Load<SpriteFont>("Fonts\\Pericles36");
             SpriteFont menuFontSmall = game.Content.Load<SpriteFont>("Fonts\\Pericles28");
 
+            // Create main menu buttons
             playButton = new Button(game, spriteBatch, new Rectangle(103, 275, 275, 70), blueButton, menuFontBig, "Play");
             levelSelectButton = new Button(game, spriteBatch, new Rectangle(103, 375, 275, 70), blueButton, menuFontSmall, "Level Select");
             settingsButton = new Button(game, spriteBatch, new Rectangle(103, 475, 275, 70), yellowButton, menuFontBig, "Settings");
             exitButton = new Button(game, spriteBatch, new Rectangle(103, 575, 275, 70), redButton, menuFontBig, "Exit");
         }
 
+        /// <summary>
+        /// Unloads all components of the main menu.
+        /// </summary>
         private void UnloadMainMenu()
         {
             playButton = null;
@@ -93,35 +106,48 @@ namespace Blocker
             exitButton = null;
         }
 
+        /// <summary>
+        /// Load all components needed for the level select view.
+        /// </summary>
         private void LoadLevelSelect()
         {
             selector = new LevelSelector(game, spriteBatch);
-            selector.Initialize();
         }
 
+        /// <summary>
+        /// Unload all components of the level select view.
+        /// </summary>
         private void UnloadLevelSelect()
         {
             selector = null;
         }
 
+        /// <summary>
+        /// Loads all components needed for the settings view.
+        /// </summary>
         private void LoadSettings()
         {
+            // Load textures
             Texture2D yellowButton = game.Content.Load<Texture2D>("Buttons\\YellowButton");
             Texture2D blueButton = game.Content.Load<Texture2D>("Buttons\\BlueButton");
             Texture2D redButton = game.Content.Load<Texture2D>("Buttons\\RedButton");
 
+            // Load fonts
             SpriteFont menuFontBig = game.Content.Load<SpriteFont>("Fonts\\Pericles36");
             SpriteFont menuFontSmall = game.Content.Load<SpriteFont>("Fonts\\Pericles28");
 
+            // Create sound label
             sound = new Label(game, spriteBatch, new Rectangle(103, 275, 275, 70), menuFontSmall, "Play with sound?");
 
+            // Create buttons
             soundYes = new Button(game, spriteBatch, new Rectangle(103, 375, 122, 70), yellowButton, menuFontBig, "Yes");
-
             soundNo = new Button(game, spriteBatch, new Rectangle(255, 375, 122, 70), blueButton, menuFontBig, "No");
-
             reset = new Button(game, spriteBatch, new Rectangle(103, 575, 275, 70), redButton, menuFontSmall, "Reset Levels");
         }
 
+        /// <summary>
+        /// Unloads all components needed for settings view.
+        /// </summary>
         private void UnloadSettings()
         {
             soundYes = null;
@@ -130,11 +156,12 @@ namespace Blocker
         }
 
         /// <summary>
-        /// Allows the game component to update itself.
+        /// Allows the menu to update itself.
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Update(GameTime gameTime)
         {
+            // Update based on view
             switch (state)
             {
                 case MenuState.Main:
@@ -145,10 +172,6 @@ namespace Blocker
                     UpdateLevelSelection(gameTime);
                     break;
 
-                case MenuState.Instructions:
-                    UpdateInstructions();
-                    break;
-
                 case MenuState.Settings:
                     UpdateSettings(gameTime);
                     break;
@@ -157,25 +180,34 @@ namespace Blocker
             base.Update(gameTime);
         }
 
+        /// <summary>
+        /// Updates all components in the main menu view.
+        /// </summary>
+        /// <param name="gameTime">Provides a snapshot of timing values.</param>
         private void UpdateMainMenu(GameTime gameTime)
         {
-            // Allows the game to exit
+            // Allows the game to exit on back button
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 game.Exit();
+
+            // Update all the buttons
             playButton.Update(gameTime);
             levelSelectButton.Update(gameTime);
             settingsButton.Update(gameTime);
             exitButton.Update(gameTime);
 
+            // Handle the play button
             if (playButton.State == TouchButtonState.Clicked)
             {
                 UnloadMainMenu();
                 LoadLevel = true;
                 LevelNumber = FileHandler.TopLevel() + 1;
+                // Don't go over max levels
                 if (LevelNumber == 26)
                     LevelNumber = 25;
             }
 
+            // Handle the level select button
             else if (levelSelectButton.State == TouchButtonState.Clicked)
             {
                 state = MenuState.LevelSelect;
@@ -183,6 +215,7 @@ namespace Blocker
                 LoadLevelSelect();
             }
 
+            // Handle the settings button
             else if (settingsButton.State == TouchButtonState.Clicked)
             {
                 state = MenuState.Settings;
@@ -190,21 +223,27 @@ namespace Blocker
                 LoadSettings();
             }
 
+            // Handle the exit button
             else if (exitButton.State == TouchButtonState.Clicked)
                 game.Exit();
         }
 
+        /// <summary>
+        /// Updates all components in the level select view.
+        /// </summary>
+        /// <param name="gameTime">Provides a snapshot of timing values.</param>
         private void UpdateLevelSelection(GameTime gameTime)
         {
             selector.Update(gameTime);
 
+            // Handle a level load
             if (selector.LoadLevel)
             {
                 LoadLevel = true;
                 LevelNumber = selector.LevelNumber;
             }
 
-            // Monitor the back button
+            // Monitor the back button to go back to main menu
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
             {
                 state = MenuState.Main;
@@ -213,37 +252,35 @@ namespace Blocker
             }
         }
 
-        private void UpdateInstructions()
-        {
-            // Monitor the back button
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
-            {
-                state = MenuState.Main;
-                UnloadLevelSelect();
-                LoadMainMenu();
-            }
-        }
-
+        /// <summary>
+        /// Updates all components in the settings view.
+        /// </summary>
+        /// <param name="gameTime">Provides a snapshot of timing values.</param>
         private void UpdateSettings(GameTime gameTime)
         {
+            // Update the settings buttons
             soundYes.Update(gameTime);
             soundNo.Update(gameTime);
             reset.Update(gameTime);
 
+            // Handle the reset button to reset levels back to 1
             if (reset.State == TouchButtonState.Clicked)
                 FileHandler.ResetLevels();
 
+            // Handle the enable sound button
             if (soundYes.State == TouchButtonState.Clicked)
             {
+                // Force a sound to play when sound gets turned on intially
                 if (SoundMixer.Instance(game).Muted)
                     SoundMixer.Instance(game).PlayEffectForce("Audio\\Button");
                 SoundMixer.Instance(game).Muted = false;
             }
 
+            // Handle sound off button
             if (soundNo.State == TouchButtonState.Clicked)
                 SoundMixer.Instance(game).Muted = true;
 
-            // Monitor the back button
+            // Monitor the back button to go back to main menu
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
             {
                 state = MenuState.Main;
@@ -253,12 +290,12 @@ namespace Blocker
         }
 
         /// <summary>
-        /// 
+        /// Allows the menu to draw itself
         /// </summary>
-        /// <param name="gameTime"></param>
+        /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Draw(GameTime gameTime)
         {
-            // Draw the static title
+            // Draw the static title (Block3r)
             spriteBatch.Begin();
             spriteBatch.Draw(title, new Vector2(0, 90), Color.White);
             spriteBatch.End();
