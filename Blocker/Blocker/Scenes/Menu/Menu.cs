@@ -11,6 +11,7 @@ using Microsoft.Xna.Framework.Media;
 using Microsoft.Xna.Framework.Input.Touch;
 using System.IO.IsolatedStorage;
 using Blocker.Handlers;
+using Blocker.Entities;
 
 
 namespace Blocker
@@ -48,6 +49,9 @@ namespace Blocker
         private Button soundYes;
         private Button soundNo;
         private Button reset;
+
+        // Level reset instructions
+        private Instruction inst;
 
         // Level loading
         public bool LoadLevel { get; private set; }
@@ -153,6 +157,7 @@ namespace Blocker
             soundYes = null;
             soundNo = null;
             reset = null;
+            inst = null;
         }
 
         /// <summary>
@@ -258,14 +263,37 @@ namespace Blocker
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         private void UpdateSettings(GameTime gameTime)
         {
-            // Update the settings buttons
-            soundYes.Update(gameTime);
-            soundNo.Update(gameTime);
+            // Update the reset button
             reset.Update(gameTime);
+
+            // Monitor the back button to go back to main menu
+            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
+            {
+                state = MenuState.Main;
+                UnloadSettings();
+                LoadMainMenu();
+                return;
+            }
+
+            // Letting the user know they reset the levels
+            if (inst != null)
+            {
+                inst.Update(gameTime);
+                if (inst.Complete)
+                    inst = null;
+                return;
+            }
 
             // Handle the reset button to reset levels back to 1
             if (reset.State == TouchButtonState.Clicked)
+            {
                 FileHandler.ResetLevels();
+                inst = new Instruction(game, spriteBatch, -1);
+            }
+
+            // Update the sound buttons
+            soundYes.Update(gameTime);
+            soundNo.Update(gameTime);
 
             // Handle the enable sound button
             if (soundYes.State == TouchButtonState.Clicked)
@@ -279,14 +307,6 @@ namespace Blocker
             // Handle sound off button
             if (soundNo.State == TouchButtonState.Clicked)
                 SoundMixer.Instance(game).Muted = true;
-
-            // Monitor the back button to go back to main menu
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
-            {
-                state = MenuState.Main;
-                UnloadSettings();
-                LoadMainMenu();
-            }
         }
 
         /// <summary>
@@ -322,6 +342,10 @@ namespace Blocker
 
                     break;
             }
+
+            // Draw the reset instructions if needed
+            if (inst != null)
+                inst.Draw(gameTime);
 
             base.Draw(gameTime);
         }

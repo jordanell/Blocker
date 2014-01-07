@@ -56,7 +56,11 @@ namespace Blocker.Entities
         public override void Initialize()
         {
             // File name of instruction texture
-            String file = "Instructions\\Inst" + Convert.ToString(instNumber);
+            String file;
+            if(instNumber == -1)
+                file = "Instructions\\Reset";
+            else
+                file = "Instructions\\Inst" + Convert.ToString(instNumber);
 
             // Load textures
             inst = game.Content.Load<Texture2D>(file);
