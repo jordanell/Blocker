@@ -464,7 +464,7 @@ namespace Blocker
                 else if (color == Color.Blue)
                 {
                     if (move != null && HUD.BlueMatter > 0)
-                        ApplyPush((MoveableBlock)target, move, origin, Color.SkyBlue);
+                        ApplyPush((MoveableBlock)target, move, origin, Color.Blue);
 
                 }
             }
@@ -481,7 +481,10 @@ namespace Blocker
         private void ApplyPush(MoveableBlock target, Movement move, Vector2 origin, Color color)
         {
             ((MoveableBlock)target).Move(move);
-            HUD.DecreaseRedMatter();
+            if(color == Color.Red)
+                HUD.DecreaseRedMatter();
+            else if (color == Color.Blue)
+                HUD.DecreaseBlueMatter();
             map[(int)origin.Y, (int)origin.X] = null;
             Vector2 dest = GridIndexOf(new Vector2(move.End.X, move.End.Y));
             map[(int)dest.Y, (int)dest.X] = target;
